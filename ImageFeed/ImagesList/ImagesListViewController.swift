@@ -60,7 +60,6 @@ extension ImagesListViewController: UITableViewDataSource {
             imagesListCell.cellLikeButton.setImage(likeImage, for: .normal)
         }
         imagesListCell.cellLikeButton.setTitle("", for: .normal)
-        imagesListCell.cellDateLable.font = UIFont(name: "SFProDisplay-Regular", size: 13)
         configCell(for: imagesListCell, with: indexPath)
         
         return imagesListCell
