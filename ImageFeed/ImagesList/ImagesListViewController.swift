@@ -6,7 +6,7 @@
 //
 import UIKit
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet private var tableView: UITableView!
     
@@ -46,21 +46,10 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-            let name = photosName[indexPath.row]
-            
-            if UIImage(named: name) != nil {
-                imagesListCell.cellImageView.image = UIImage(named: name)
-            } else {
-                return
-            }
-            
-            imagesListCell.cellDateLable.text = dateFormatter.string(from: Date())
-            let likeImage = (indexPath.row + 1) % 2 == 0 ? UIImage(named: "Active") : UIImage(named: "No Active")
-            imagesListCell.cellLikeButton.setImage(likeImage, for: .normal)
-        }
-        imagesListCell.cellLikeButton.setTitle("", for: .normal)
-        configCell(for: imagesListCell, with: indexPath)
+        let model = ImageViewModel(imageName: photosName[indexPath.row],
+                                   date: dateFormatter.string(from: Date()),
+                                   isLiked: (indexPath.row + 1) % 2 == 0)
+        imagesListCell.configure(with: model)
         
         return imagesListCell
     }

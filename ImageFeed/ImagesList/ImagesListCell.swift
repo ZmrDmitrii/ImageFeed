@@ -11,4 +11,17 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet weak var cellImageView: UIImageView!
     @IBOutlet weak var cellLikeButton: UIButton!
     @IBOutlet weak var cellDateLable: UILabel!
+    
+    func configure(with model: ImageViewModel) {
+        if UIImage(named: model.imageName) != nil {
+            cellImageView.image = UIImage(named: model.imageName)
+        } else {
+            print("no image found")
+            return
+        }
+        cellDateLable.text = model.date
+        cellLikeButton.setImage(model.isLiked ? UIImage(named: "Active") : UIImage(named: "No Active"),
+                                for: .normal)
+        cellLikeButton.setTitle("", for: .normal)
+    }
 }
