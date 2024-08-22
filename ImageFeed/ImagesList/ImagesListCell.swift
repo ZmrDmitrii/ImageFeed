@@ -8,9 +8,9 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
-    @IBOutlet weak var cellImageView: UIImageView!
-    @IBOutlet weak var cellLikeButton: UIButton!
-    @IBOutlet weak var cellDateLable: UILabel!
+    @IBOutlet private weak var cellImageView: UIImageView!
+    @IBOutlet private weak var cellLikeButton: UIButton!
+    @IBOutlet private weak var cellDateLable: UILabel!
     
     func configure(with model: ImageViewModel) {
         if UIImage(named: model.imageName) != nil {

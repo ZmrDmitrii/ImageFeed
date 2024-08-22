@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D12DD4A22C68A72400ADC1B3 /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12DD4A12C68A72400ADC1B3 /* ImagesListCell.swift */; };
+		D147FDB82C707AA90015D650 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147FDB72C707AA90015D650 /* ProfileViewController.swift */; };
 		D1DA7FF72C70717A007AFC92 /* ImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA7FF62C70717A007AFC92 /* ImageViewModel.swift */; };
 		D1E944F02C5F83D5008883F8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E944EF2C5F83D5008883F8 /* AppDelegate.swift */; };
 		D1E944F22C5F83D5008883F8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E944F12C5F83D5008883F8 /* SceneDelegate.swift */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		D12DD4A12C68A72400ADC1B3 /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
+		D147FDB72C707AA90015D650 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		D1DA7FF62C70717A007AFC92 /* ImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewModel.swift; sourceTree = "<group>"; };
 		D1E944EC2C5F83D5008883F8 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1E944EF2C5F83D5008883F8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 				D1E944F82C5F83D6008883F8 /* Assets.xcassets */,
 				D1E944FA2C5F83D6008883F8 /* LaunchScreen.storyboard */,
 				D1E944FD2C5F83D6008883F8 /* Info.plist */,
+				D147FDB72C707AA90015D650 /* ProfileViewController.swift */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -161,6 +164,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D147FDB82C707AA90015D650 /* ProfileViewController.swift in Sources */,
 				D1E944F42C5F83D5008883F8 /* ImagesListViewController.swift in Sources */,
 				D1DA7FF72C70717A007AFC92 /* ImageViewModel.swift in Sources */,
 				D12DD4A22C68A72400ADC1B3 /* ImagesListCell.swift in Sources */,
