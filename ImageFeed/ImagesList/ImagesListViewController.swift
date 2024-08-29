@@ -12,6 +12,7 @@ final class ImagesListViewController: UIViewController {
     
     //MARK: - Private properties
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
     //MARK: - Date formetter
     private lazy var dateFormatter: DateFormatter = {
@@ -29,6 +30,24 @@ final class ImagesListViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 4, right: 0)
         //от себя - убрал вертикальный ползунок
         tableView.showsVerticalScrollIndicator = false
+    }
+    
+    //MARK: - Override methods
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showSingleImageSegueIdentifier {
+            guard
+                let viewController = segue.destination as? SingleImageViewController,
+                let indexPath = sender as? IndexPath
+            else {
+                assertionFailure("Invalid segue destination")
+                return
+            }
+            
+            let image = UIImage(named: photosName[indexPath.row])
+            viewController.image = image
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
     }
 }
 
@@ -64,5 +83,7 @@ extension ImagesListViewController: UITableViewDelegate {
         return imageHeight * (imageViewWidth / imageWidth)
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+    }
 }
