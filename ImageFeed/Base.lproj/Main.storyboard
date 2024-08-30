@@ -138,7 +138,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="YPBackground"/>
                                         <connections>
-                                            <outlet property="cellDateLable" destination="HO6-ca-Mst" id="G01-7Y-dY2"/>
+                                            <outlet property="cellDateLabel" destination="HO6-ca-Mst" id="G01-7Y-dY2"/>
                                             <outlet property="cellImageView" destination="XdE-k4-oAR" id="Dzd-X7-Akn"/>
                                             <outlet property="cellLikeButton" destination="Wiv-Ua-U6L" id="46o-AX-pm3"/>
                                         </connections>

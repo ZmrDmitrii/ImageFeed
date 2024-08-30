@@ -7,28 +7,11 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
-    // MARK: - Private Properites
-    private var profileImageView: UIImageView?
     
-    // MARK: - View Life Cycles
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = UIColor.ypBackground
-        createProfileImageView()
-        createExitButton()
-        createLables()
-    }
-    
-    // MARK: - Button Actions
-    @objc private func didTapExitButton() {
-        //пока что пусто
-    }
-    
-    // MARK: - Private Methods
-    private func createProfileImageView() {
+    // MARK: - Private Properties
+    private lazy var profileImageView: UIImageView = {
         let profileImage = UIImage.profile
-        profileImageView = UIImageView(image: profileImage)
-        guard let profileImageView else { return }
+        let profileImageView = UIImageView(image: profileImage)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(profileImageView)
         
@@ -38,11 +21,29 @@ final class ProfileViewController: UIViewController {
             profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
         ])
+        
+        return profileImageView
+    }()
+    
+    // MARK: - View Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupLayout()
+    }
+    
+    // MARK: - Button Actions
+    @objc private func didTapExitButton() {
+        //пока что пусто
+    }
+    
+    // MARK: - Private Methods
+    private func setupLayout() {
+        view.backgroundColor = UIColor.ypBackground
+        createExitButton()
+        createLabels()
     }
     
     private func createExitButton() {
-        guard let profileImageView else { return }
-        
         let exitImage = UIImage.exitIcon
         let exitButton = UIButton.systemButton(with: exitImage, target: self, action: #selector(didTapExitButton))
         exitButton.translatesAutoresizingMaskIntoConstraints = false
@@ -57,9 +58,7 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func createLables() {
-        guard let profileImageView else { return }
-        
+    private func createLabels() {
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nameLabel)

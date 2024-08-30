@@ -11,17 +11,19 @@ final class ImagesListCell: UITableViewCell {
     
     @IBOutlet private weak var cellImageView: UIImageView!
     @IBOutlet private weak var cellLikeButton: UIButton!
-    @IBOutlet private weak var cellDateLable: UILabel!
+    @IBOutlet private weak var cellDateLabel: UILabel!
     
     func configure(with model: ImageViewModel) {
         guard let image = UIImage(named: model.imageName) else {
-            print("Image is not found")
+            assertionFailure("Error: image is not found")
             return
         }
         cellImageView.image = image
-        cellDateLable.text = model.date
-        cellLikeButton.setImage(model.isLiked ? UIImage(named: "Active") : UIImage(named: "No Active"),
-                                for: .normal)
+        cellDateLabel.text = model.date
+        cellLikeButton.setImage(
+            model.isLiked ? UIImage(named: "Active") : UIImage(named: "No Active"),
+            for: .normal
+        )
         cellLikeButton.setTitle("", for: .normal)
     }
 }

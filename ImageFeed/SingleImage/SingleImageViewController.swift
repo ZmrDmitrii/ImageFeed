@@ -7,6 +7,7 @@
 import UIKit
 
 final class SingleImageViewController: UIViewController {
+    
     // MARK: - IB Outlets
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var scrollView: UIScrollView!
@@ -19,19 +20,19 @@ final class SingleImageViewController: UIViewController {
             guard isViewLoaded else { return }
             imageView.image = image
             guard let image else {
-                print("image is not found")
+                assertionFailure("Error: image is not found")
                 return
             }
             rescaleAndCenterImageInScrollView(image: image)
         }
     }
-    
-    // MARK: - View Life Cycles
+
+    // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.image = image
         guard let image else {
-            print("image is not found")
+            assertionFailure("Error: image is not found")
             return
         }
         imageView.frame.size = image.size
@@ -50,7 +51,7 @@ final class SingleImageViewController: UIViewController {
     
     @IBAction private func didTapShareButton(_ sender: Any) {
         guard let image = imageView.image else {
-            print("image is not found")
+            assertionFailure("Error: image is not found")
             return
         }
         let activityViewController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
@@ -68,11 +69,14 @@ final class SingleImageViewController: UIViewController {
         let theoreticalScale = min(hScale, wScale)
         let scale = min(maxScale, max(minScale, theoreticalScale))
         scrollView.setZoomScale(scale, animated: false)
-        scrollView.layoutIfNeeded()
-        let newContentSize = scrollView.contentSize
-        scrollView.contentInset.left = (visibleRectangleSize.width - newContentSize.width) / 2
-        scrollView.contentInset.top = (visibleRectangleSize.height - newContentSize.height) / 2
-        scrollView.contentInset.bottom = (visibleRectangleSize.height - newContentSize.height) / 2
+        updateScrollViewInsets(rectangleSize: visibleRectangleSize, newContentSize: scrollView.contentSize)
+    }
+    
+    private func updateScrollViewInsets(rectangleSize: CGSize, newContentSize: CGSize) {
+        scrollView.contentInset.left = (rectangleSize.width - newContentSize.width) / 2
+        scrollView.contentInset.right = scrollView.contentInset.left
+        scrollView.contentInset.top = (rectangleSize.height - newContentSize.height) / 2
+        scrollView.contentInset.bottom = scrollView.contentInset.top
     }
 }
 
@@ -86,20 +90,9 @@ extension SingleImageViewController : UIScrollViewDelegate {
         let visibleRectangleSize = scrollView.bounds.size
         let contentSize = scrollView.contentSize
         
-        if scrollView.contentSize.height <= visibleRectangleSize.height {
-            scrollView.contentInset.top = (visibleRectangleSize.height - contentSize.height) / 2
-            scrollView.contentInset.bottom = (visibleRectangleSize.height - contentSize.height) / 2
-        } else {
-            scrollView.contentInset.top = 0
-            scrollView.contentInset.bottom = 0
-        }
-    
-        if scrollView.contentSize.width < visibleRectangleSize.width {
-            scrollView.contentInset.left = (visibleRectangleSize.width - contentSize.width) / 2
-            scrollView.contentInset.right = (visibleRectangleSize.width - contentSize.width) / 2
-        } else {
-            scrollView.contentInset.left = 0
-            scrollView.contentInset.right = 0
-        }
+        scrollView.contentInset.top = max((visibleRectangleSize.height - contentSize.height) / 2, 0)
+        scrollView.contentInset.bottom = scrollView.contentInset.top
+        scrollView.contentInset.left = max((visibleRectangleSize.width - contentSize.width) / 2, 0)
+        scrollView.contentInset.right = scrollView.contentInset.left
     }
 }

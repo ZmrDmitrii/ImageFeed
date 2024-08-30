@@ -7,14 +7,14 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController {
-    //MARK: - IBOutlets
+    
+    // MARK: - IBOutlets
     @IBOutlet private var tableView: UITableView!
     
-    //MARK: - Private properties
+    // MARK: - Private properties
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
-    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
-    //MARK: - Date formatter
+    // MARK: - Date Formatter
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -22,7 +22,12 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    //MARK: - View Life Cycles
+    //MARK: - Constants
+    private enum Constants {
+        static let showSingleImageSegueIdentifier = "ShowSingleImage"
+    }
+    
+    // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
@@ -31,14 +36,14 @@ final class ImagesListViewController: UIViewController {
         tableView.showsVerticalScrollIndicator = false
     }
     
-    //MARK: - Override methods
+    // MARK: - Override methods
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showSingleImageSegueIdentifier {
+        if segue.identifier == Constants.showSingleImageSegueIdentifier {
             guard
                 let viewController = segue.destination as? SingleImageViewController,
                 let indexPath = sender as? IndexPath
             else {
-                assertionFailure("Invalid segue destination")
+                assertionFailure("Error: invalid segue destination")
                 return
             }
             
@@ -60,7 +65,7 @@ extension ImagesListViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
         
         guard let imagesListCell = cell as? ImagesListCell else {
-            print("Error: failed to cast the cell to the required type")
+            assertionFailure("Error: failed to cast the cell to the required type")
             return UITableViewCell()
         }
         
@@ -83,6 +88,6 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+        performSegue(withIdentifier: Constants.showSingleImageSegueIdentifier, sender: indexPath)
     }
 }
