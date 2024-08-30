@@ -6,14 +6,15 @@
 //
 import UIKit
 
-class ImagesListViewController: UIViewController {
-    //MARK: - IBOutlets
+final class ImagesListViewController: UIViewController {
+    
+    // MARK: - IBOutlets
     @IBOutlet private var tableView: UITableView!
     
-    //MARK: - Private properties
+    // MARK: - Private properties
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     
-    //MARK: - Date formetter
+    // MARK: - Date Formatter
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -21,14 +22,36 @@ class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    //MARK: - View Life Cycles
+    //MARK: - Constants
+    private enum Constants {
+        static let showSingleImageSegueIdentifier = "ShowSingleImage"
+    }
+    
+    // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 4, right: 0)
-        //от себя - убрал вертикальный ползунок
         tableView.showsVerticalScrollIndicator = false
+    }
+    
+    // MARK: - Override methods
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == Constants.showSingleImageSegueIdentifier {
+            guard
+                let viewController = segue.destination as? SingleImageViewController,
+                let indexPath = sender as? IndexPath
+            else {
+                assertionFailure("Error: invalid segue destination")
+                return
+            }
+            
+            let image = UIImage(named: photosName[indexPath.row])
+            viewController.image = image
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
     }
 }
 
@@ -42,25 +65,14 @@ extension ImagesListViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
         
         guard let imagesListCell = cell as? ImagesListCell else {
-            print("Error: failed to cast the cell to the required type")
+            assertionFailure("Error: failed to cast the cell to the required type")
             return UITableViewCell()
         }
         
-        func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-            let name = photosName[indexPath.row]
-            
-            if UIImage(named: name) != nil {
-                imagesListCell.cellImageView.image = UIImage(named: name)
-            } else {
-                return
-            }
-            
-            imagesListCell.cellDateLable.text = dateFormatter.string(from: Date())
-            let likeImage = (indexPath.row + 1) % 2 == 0 ? UIImage(named: "Active") : UIImage(named: "No Active")
-            imagesListCell.cellLikeButton.setImage(likeImage, for: .normal)
-        }
-        imagesListCell.cellLikeButton.setTitle("", for: .normal)
-        configCell(for: imagesListCell, with: indexPath)
+        let model = ImageViewModel(imageName: photosName[indexPath.row],
+                                   date: dateFormatter.string(from: Date()),
+                                   isLiked: (indexPath.row + 1) % 2 == 0)
+        imagesListCell.configure(with: model)
         
         return imagesListCell
     }
@@ -75,5 +87,7 @@ extension ImagesListViewController: UITableViewDelegate {
         return imageHeight * (imageViewWidth / imageWidth)
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: Constants.showSingleImageSegueIdentifier, sender: indexPath)
+    }
 }
