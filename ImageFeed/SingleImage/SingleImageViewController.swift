@@ -7,7 +7,13 @@
 import UIKit
 
 final class SingleImageViewController: UIViewController {
+    // MARK: - IB Outlets
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var backButton: UIButton!
+    @IBOutlet private weak var shareButton: UIButton!
     
+    // MARK: - Public Properties
     var image: UIImage? {
         didSet {
             guard isViewLoaded else { return }
@@ -20,11 +26,7 @@ final class SingleImageViewController: UIViewController {
         }
     }
     
-    @IBOutlet private weak var backButton: UIButton!
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet private weak var scrollView: UIScrollView!
-    @IBOutlet private weak var shareButton: UIButton!
-    
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.image = image
@@ -41,6 +43,7 @@ final class SingleImageViewController: UIViewController {
         rescaleAndCenterImageInScrollView(image: image)
     }
     
+    // MARK: - IB Actions
     @IBAction private func didTapBackButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -54,8 +57,8 @@ final class SingleImageViewController: UIViewController {
         present(activityViewController, animated: true, completion: nil)
     }
     
-    //не нужно?
-    func calculateOriginScale(image: UIImage) -> CGFloat {
+    // MARK: - Private Methods
+    private func rescaleAndCenterImageInScrollView(image: UIImage) {
         view.layoutIfNeeded()
         let visibleRectangleSize = scrollView.bounds.size
         let hScale = visibleRectangleSize.height / image.size.height
@@ -64,37 +67,22 @@ final class SingleImageViewController: UIViewController {
         let maxScale = scrollView.maximumZoomScale
         let theoreticalScale = min(hScale, wScale)
         let scale = min(maxScale, max(minScale, theoreticalScale))
-        return scale
-    }
-    
-    func rescaleAndCenterImageInScrollView(image: UIImage) {
-        view.layoutIfNeeded()
-        let visibleRectangleSize = scrollView.bounds.size
-        let scale = calculateOriginScale(image: image)
         scrollView.setZoomScale(scale, animated: false)
         scrollView.layoutIfNeeded()
         let newContentSize = scrollView.contentSize
         scrollView.contentInset.left = (visibleRectangleSize.width - newContentSize.width) / 2
         scrollView.contentInset.top = (visibleRectangleSize.height - newContentSize.height) / 2
         scrollView.contentInset.bottom = (visibleRectangleSize.height - newContentSize.height) / 2
-//        let xOffset = (newContentSize.width - visibleRectangleSize.width) / 2
-//        let yOffset = (newContentSize.height - visibleRectangleSize.height) / 2
-//        scrollView.setContentOffset(CGPoint(x: xOffset, y: yOffset), animated: false)
     }
 }
 
+// MARK: - UIScrollViewDelegate
 extension SingleImageViewController : UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
     }
     
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        guard let image else {
-            print("image is not found")
-            return
-        }
-        //не нужно?
-        let originScale = calculateOriginScale(image: image)
         let visibleRectangleSize = scrollView.bounds.size
         let contentSize = scrollView.contentSize
         
@@ -113,6 +101,5 @@ extension SingleImageViewController : UIScrollViewDelegate {
             scrollView.contentInset.left = 0
             scrollView.contentInset.right = 0
         }
-        
     }
 }

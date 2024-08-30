@@ -14,7 +14,7 @@ final class ImagesListViewController: UIViewController {
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
-    //MARK: - Date formetter
+    //MARK: - Date formatter
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -28,7 +28,6 @@ final class ImagesListViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 4, right: 0)
-        //от себя - убрал вертикальный ползунок
         tableView.showsVerticalScrollIndicator = false
     }
     

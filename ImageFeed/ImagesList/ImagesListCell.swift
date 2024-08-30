@@ -8,13 +8,14 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
+    
     @IBOutlet private weak var cellImageView: UIImageView!
     @IBOutlet private weak var cellLikeButton: UIButton!
     @IBOutlet private weak var cellDateLable: UILabel!
     
     func configure(with model: ImageViewModel) {
         guard let image = UIImage(named: model.imageName) else {
-            print("Image is't found")
+            print("Image is not found")
             return
         }
         cellImageView.image = image

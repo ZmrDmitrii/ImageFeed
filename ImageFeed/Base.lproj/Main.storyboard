@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,9 +16,9 @@
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Rzq-eO-tj7">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="selectedImageTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="selectedImageTintColor" name="YPWhite"/>
                         <tabBarAppearance key="standardAppearance">
-                            <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" name="YPBackground"/>
                         </tabBarAppearance>
                     </tabBar>
                     <connections>
@@ -36,104 +37,9 @@
                     <view key="view" contentMode="scaleToFill" id="hJG-3v-xfK">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2N4-3Z-Jrd">
-                                <rect key="frame" x="16" y="90.999999999999986" width="361" height="151.66666666666663"/>
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="8GR-7G-Q0r">
-                                        <rect key="frame" x="0.0" y="0.0" width="361" height="70"/>
-                                        <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Photo" translatesAutoresizingMaskIntoConstraints="NO" id="d2k-5e-GKz">
-                                                <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="70" id="wey-Ho-cDp"/>
-                                                    <constraint firstAttribute="height" constant="70" id="xlC-7F-bPJ"/>
-                                                </constraints>
-                                            </imageView>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UTf-UJ-BZX">
-                                                <rect key="frame" x="313" y="0.0" width="48" height="70"/>
-                                                <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KOE-0N-IcI">
-                                                        <rect key="frame" x="0.0" y="11" width="48" height="48"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="width" secondItem="KOE-0N-IcI" secondAttribute="height" multiplier="1:1" id="6St-Mo-mJr"/>
-                                                            <constraint firstAttribute="width" constant="48" id="aVV-g4-jPB"/>
-                                                        </constraints>
-                                                        <state key="normal" title="Button"/>
-                                                        <buttonConfiguration key="configuration" style="plain" image="Exit"/>
-                                                        <connections>
-                                                            <action selector="didTapExitButton:" destination="sG1-ig-we4" eventType="touchUpInside" id="mvL-hZ-cVZ"/>
-                                                        </connections>
-                                                    </button>
-                                                </subviews>
-                                                <constraints>
-                                                    <constraint firstAttribute="trailing" secondItem="KOE-0N-IcI" secondAttribute="trailing" id="D4E-ye-jaZ"/>
-                                                    <constraint firstAttribute="width" constant="48" id="t2h-Fs-DP7"/>
-                                                    <constraint firstItem="KOE-0N-IcI" firstAttribute="centerY" secondItem="UTf-UJ-BZX" secondAttribute="centerY" id="tfO-xU-gqs"/>
-                                                </constraints>
-                                            </view>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="UTf-UJ-BZX" secondAttribute="trailing" id="2Ig-bf-kTj"/>
-                                            <constraint firstItem="d2k-5e-GKz" firstAttribute="centerY" secondItem="8GR-7G-Q0r" secondAttribute="centerY" id="93m-m1-UJv"/>
-                                        </constraints>
-                                    </stackView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rf0-np-YM2">
-                                        <rect key="frame" x="0.0" y="78" width="361" height="27"/>
-                                        <attributedString key="attributedText">
-                                            <fragment content="Екатерина Новикова">
-                                                <attributes>
-                                                    <color key="NSColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                                    <font key="NSFont" size="23" name="SFPro-Semibold"/>
-                                                </attributes>
-                                            </fragment>
-                                        </attributedString>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g9T-tY-OZO">
-                                        <rect key="frame" x="0.0" y="113" width="361" height="15.333333333333343"/>
-                                        <attributedString key="attributedText">
-                                            <fragment content="@ekaterina_nov">
-                                                <attributes>
-                                                    <color key="NSColor" red="0.68235294117647061" green="0.68627450980392157" blue="0.70588235294117641" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                                    <font key="NSFont" size="13" name="SFPro-Regular"/>
-                                                </attributes>
-                                            </fragment>
-                                        </attributedString>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nii-z6-weQ">
-                                        <rect key="frame" x="0.0" y="136.33333333333334" width="361" height="15.333333333333343"/>
-                                        <attributedString key="attributedText">
-                                            <fragment content="Hello, world!">
-                                                <attributes>
-                                                    <color key="NSColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                                    <font key="NSFont" size="13" name="SFPro-Regular"/>
-                                                    <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                </attributes>
-                                            </fragment>
-                                        </attributedString>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                            </stackView>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="ct6-5C-DXL"/>
-                        <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="2N4-3Z-Jrd" firstAttribute="leading" secondItem="hJG-3v-xfK" secondAttribute="leading" constant="16" id="5vh-C6-tgm"/>
-                            <constraint firstItem="2N4-3Z-Jrd" firstAttribute="top" secondItem="ct6-5C-DXL" secondAttribute="top" constant="32" id="dvJ-Yt-C39"/>
-                            <constraint firstAttribute="trailing" secondItem="2N4-3Z-Jrd" secondAttribute="trailing" constant="16" id="p6O-bH-L7x"/>
-                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="" image="tab_profile_active" id="cF6-sk-8Fb"/>
-                    <connections>
-                        <outlet property="descriptionLabel" destination="Nii-z6-weQ" id="3Qj-sp-bxW"/>
-                        <outlet property="exitButton" destination="KOE-0N-IcI" id="tpP-1K-1lG"/>
-                        <outlet property="nameLabel" destination="Rf0-np-YM2" id="Gh6-w1-sWl"/>
-                        <outlet property="profileImage" destination="d2k-5e-GKz" id="H2p-7t-13o"/>
-                        <outlet property="usernameLabel" destination="g9T-tY-OZO" id="P9Y-Ox-IJ6"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hHE-Vv-TKj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -150,7 +56,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" estimatedSectionHeaderHeight="-1" sectionFooterHeight="28" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="TP0-Sw-cN3">
                                 <rect key="frame" x="16" y="0.0" width="361" height="852"/>
                                 <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="sectionIndexBackgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="sectionIndexBackgroundColor" name="YPBackground"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="255" id="Y0G-Xr-PcS" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="361" height="255"/>
@@ -174,7 +80,7 @@
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27 августа 2022" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HO6-ca-Mst">
                                                                     <rect key="frame" x="8" y="223.66666666666666" width="96.666666666666671" height="15.333333333333343"/>
                                                                     <fontDescription key="fontDescription" name="SFPro-Regular" family="SF Pro" pointSize="13"/>
-                                                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                                    <color key="textColor" name="YPWhite"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wiv-Ua-U6L">
@@ -222,7 +128,7 @@
                                                     </constraints>
                                                 </stackView>
                                             </subviews>
-                                            <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" name="YPBackground"/>
                                             <constraints>
                                                 <constraint firstItem="467-dq-NWK" firstAttribute="top" secondItem="BNn-wx-ffH" secondAttribute="top" id="0Qn-bO-nnZ"/>
                                                 <constraint firstAttribute="bottom" secondItem="467-dq-NWK" secondAttribute="bottom" id="Ka3-Dg-6tA"/>
@@ -230,7 +136,7 @@
                                                 <constraint firstItem="467-dq-NWK" firstAttribute="leading" secondItem="BNn-wx-ffH" secondAttribute="leading" id="qjc-6W-Ks2"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" name="YPBackground"/>
                                         <connections>
                                             <outlet property="cellDateLable" destination="HO6-ca-Mst" id="G01-7Y-dY2"/>
                                             <outlet property="cellImageView" destination="XdE-k4-oAR" id="Dzd-X7-Akn"/>
@@ -241,7 +147,7 @@
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="YPBackground"/>
                         <constraints>
                             <constraint firstItem="TP0-Sw-cN3" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="ajC-5d-n8w"/>
                             <constraint firstAttribute="bottom" secondItem="TP0-Sw-cN3" secondAttribute="bottom" id="kUj-xE-Fiv"/>
@@ -309,7 +215,7 @@
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="IbN-hI-I0m"/>
-                        <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" name="YPBackground"/>
                         <constraints>
                             <constraint firstItem="Qzg-of-bRv" firstAttribute="top" secondItem="reJ-Ci-Qb4" secondAttribute="top" id="23H-26-pFI"/>
                             <constraint firstAttribute="bottom" secondItem="Qzg-of-bRv" secondAttribute="bottom" id="2JC-mJ-ENW"/>
@@ -336,12 +242,16 @@
     <resources>
         <image name="0" width="1600" height="1059"/>
         <image name="Backward" width="24" height="24"/>
-        <image name="Exit" width="24" height="24"/>
         <image name="Gradient" width="343" height="30"/>
         <image name="No Active" width="42" height="42"/>
-        <image name="Photo" width="70" height="70"/>
         <image name="Sharing" width="51" height="51"/>
         <image name="tab_editorial_active" width="30" height="30"/>
         <image name="tab_profile_active" width="30" height="30"/>
+        <namedColor name="YPBackground">
+            <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YPWhite">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>
