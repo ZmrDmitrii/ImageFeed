@@ -22,11 +22,6 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    //MARK: - Constants
-    private enum Constants {
-        static let showSingleImageSegueIdentifier = "ShowSingleImage"
-    }
-    
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +31,7 @@ final class ImagesListViewController: UIViewController {
         tableView.showsVerticalScrollIndicator = false
     }
     
-    // MARK: - Override methods
+    // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.showSingleImageSegueIdentifier {
             guard
