@@ -14,7 +14,7 @@ final class AuthViewController: UIViewController {
     
     // MARK: - Private Properties
     private let oAuth2Service = OAuth2Service.shared
-    private let delegate: AuthViewControllerDelegate = SplashViewController()
+    weak var delegate: AuthViewControllerDelegate? = nil
     
     // MARK: - IB Outlets
     @IBOutlet weak var logInButton: UIButton!
@@ -45,7 +45,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 guard let self else { return }
                 switch result {
                 case .success:
-                    self.delegate.didAuthenticate(self)
+                    self.delegate?.didAuthenticate(self)
                 case .failure(let error):
                     // TODO: показ алерта
                     print("Error: show alert \(error)")

@@ -15,7 +15,8 @@ final class SplashViewController: UIViewController {
             // TODO: Загрузить необходимую информацию о пользователе
             switchToTabBarController()
         } else {
-            let authViewController = storyboard?.instantiateViewController(withIdentifier: Constants.authVCIdentifier)
+            let authViewController = storyboard?.instantiateViewController(withIdentifier: Constants.authVCIdentifier) as? AuthViewController
+            authViewController?.delegate = self
             authViewController?.modalPresentationStyle = .fullScreen
             present(authViewController ?? self, animated: true, completion: nil)
         }

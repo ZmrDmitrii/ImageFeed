@@ -122,13 +122,25 @@ extension WebViewViewController: WKNavigationDelegate {
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
         // Функция code(from:) проверяет, есть ли в URL, на который хочет перейти пользователь, параметр "code"
-        if let code = code(from: navigationAction) {
-            // Если параметр с именем "code" найден в URL - навигация отменятся (.cancel) - пользователь авторизовался
-            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
-            decisionHandler(.cancel)
-        } else {
+        guard let code = code(from: navigationAction) else {
             // Если параметр с именем "code" не найден в URL - разрешаем навигацию дальше - пользователь просто переходит на другую страницу
             decisionHandler(.allow)
+            return
         }
+        // Если параметр с именем "code" найден в URL - навигация отменятся (.cancel) - пользователь авторизовался
+        delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+        decisionHandler(.cancel)
+        
+        
+        
+//        // Функция code(from:) проверяет, есть ли в URL, на который хочет перейти пользователь, параметр "code"
+//        if let code = code(from: navigationAction) {
+//            // Если параметр с именем "code" найден в URL - навигация отменятся (.cancel) - пользователь авторизовался
+//            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+//            decisionHandler(.cancel)
+//        } else {
+//            // Если параметр с именем "code" не найден в URL - разрешаем навигацию дальше - пользователь просто переходит на другую страницу
+//            decisionHandler(.allow)
+//        }
     }
 }
