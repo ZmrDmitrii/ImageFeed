@@ -25,9 +25,13 @@ final class ProfileViewController: UIViewController {
         return profileImageView
     }()
     
+    private let profileService = ProfileService.shared
+    private var profile: ProfileViewModel?
+    
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        profile = ProfileStorage.profile
         setupLayout()
     }
     
@@ -62,21 +66,21 @@ final class ProfileViewController: UIViewController {
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nameLabel)
-        nameLabel.text = "Екатерина Новикова"
+        nameLabel.text = profile?.name
         nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         nameLabel.textColor = UIColor.ypWhite
         
         let nicknameLabel = UILabel()
         nicknameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nicknameLabel)
-        nicknameLabel.text = "@ekaterina_nov"
+        nicknameLabel.text = profile?.loginName
         nicknameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         nicknameLabel.textColor = UIColor.ypGrey
         
         let descriptionLabel = UILabel()
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(descriptionLabel)
-        descriptionLabel.text = "Hello, world!"
+        descriptionLabel.text = profile?.bio
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.textColor = UIColor.ypWhite
         

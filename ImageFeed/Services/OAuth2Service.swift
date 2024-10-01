@@ -57,7 +57,7 @@ final class OAuth2Service {
             return
         }
         
-        networkClient.performRequest(request: request, handler: { result in
+        networkClient.performRequest(serviceType: ServiceType.oauth2, request: request, handler: { result in
             switch result {
             case .success(let data):
                 do {

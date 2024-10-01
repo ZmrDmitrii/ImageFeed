@@ -8,12 +8,14 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     
+    // MARK: - Private Properties
+    private let profileService = ProfileService.shared
+    
     // MARK: - View Life Cycle
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if OAuth2TokenStorage.token != nil {
-            // TODO: Загрузить необходимую информацию о пользователе
-            switchToTabBarController()
+            fetchProfile()
         } else {
             let authViewController = storyboard?.instantiateViewController(withIdentifier: Constants.authVCIdentifier) as? AuthViewController
             authViewController?.delegate = self
@@ -39,6 +41,27 @@ final class SplashViewController: UIViewController {
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true, completion: nil)
-        switchToTabBarController()
+        fetchProfile()
+    }
+    
+    private func fetchProfile() {
+        DispatchQueue.main.async {
+            UIBlockingProgressHUD.show()
+            self.profileService.fetchProfile() { [weak self] result in
+                UIBlockingProgressHUD.dismiss()
+                
+                guard let self else { return }
+                
+                switch result {
+                case .success(let profile):
+                    self.switchToTabBarController()
+                    ProfileStorage.profile = profile
+                case .failure(let error):
+                    // TODO: показ алерта
+                    print("Error: show alert \(error)")
+                    
+                }
+            }
+        }
     }
 }
