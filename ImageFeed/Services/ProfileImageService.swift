@@ -14,7 +14,7 @@ final class ProfileImageService {
     
     // MARK: - Private Properties
     private lazy var networkClient: NetworkRouting = NetworkClient()
-    private(set) var avatarURL: String?
+//    private(set) var avatarURL: String?
     
     // MARK: - Initializers
     private init() {}
@@ -35,35 +35,56 @@ final class ProfileImageService {
             return
         }
         
-        networkClient.performRequest(serviceType: .profile, request: request) { result in
+        networkClient.performRequestAndDecode(
+            serviceType: .profile,
+            request: request
+        ) { [weak self] (result: Result<ProfileImageResult, Error>) in
             switch result {
-            case .success(let data):
-                do {
-                    let response = try JSONDecoder().decode(ProfileImageResult.self, from: data)
-                    // удалить принт
-                    print(response)
-                    //удалить принт
-                    let avatarURL = response.profileImage.small
-                    fulfillCompletionOnTheMainThread(.success(avatarURL))
-                } catch {
-                    fulfillCompletionOnTheMainThread(.failure(error))
-                    assertionFailure("Error: decoding error \(error)")
-                    print("Error: decoding error \(error)")
-                }
+            case .success(let response):
+                let avatarURL = response.profileImage.small
+                fulfillCompletionOnTheMainThread(.success(avatarURL))
+                
+                NotificationCenter.default.post(
+                    name: ProfileImageService.didChangeNotification,
+                    object: self,
+                    userInfo: ["URL": avatarURL]
+                )
             case .failure(let error):
-                fulfillCompletionOnTheMainThread(.failure(error))
                 assertionFailure("Error: \(error)")
                 print("Error: \(error)")
+                fulfillCompletionOnTheMainThread(.failure(error))
             }
         }
         
-        // точно тут, а не внутри замыкания?
-        NotificationCenter.default.post(
-            name: ProfileImageService.didChangeNotification,
-            object: self,
-            userInfo: ["URL": avatarURL]
-        )
+//        networkClient.performRequest(serviceType: .profile, request: request) { result in
+//            switch result {
+//            case .success(let data):
+//                do {
+//                    let response = try JSONDecoder().decode(ProfileImageResult.self, from: data)
+//                    // удалить принт
+//                    print(response)
+//                    //удалить принт
+//                    let avatarURL = response.profileImage.small
+//                    fulfillCompletionOnTheMainThread(.success(avatarURL))
+//                } catch {
+//                    fulfillCompletionOnTheMainThread(.failure(error))
+//                    assertionFailure("Error: decoding error \(error)")
+//                    print("Error: decoding error \(error)")
+//                }
+//            case .failure(let error):
+//                fulfillCompletionOnTheMainThread(.failure(error))
+//                assertionFailure("Error: \(error)")
+//                print("Error: \(error)")
+//            }
+//        }
         
+        // точно тут, а не внутри замыкания?
+        // Перенес внутрь замыкания
+//        NotificationCenter.default.post(
+//            name: ProfileImageService.didChangeNotification,
+//            object: self,
+//            userInfo: ["URL": avatarURL]
+//        )
     }
     
     // MARK: - Private Methods

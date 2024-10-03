@@ -51,28 +51,43 @@ final class OAuth2Service {
         lastCode = code
                 
         guard let request = createURLRequest(code: code) else {
-            fulfillCompletionOnTheMainThread(.failure(AuthServiceError.invalidRequest))
             assertionFailure("Error: failed to create URL Request")
             print("Error: failed to create URL Request")
+            fulfillCompletionOnTheMainThread(.failure(AuthServiceError.invalidRequest))
             return
         }
         
-        networkClient.performRequest(serviceType: ServiceType.oauth2, request: request, handler: { result in
+        networkClient.performRequestAndDecode(
+            serviceType: .oauth2,
+            request: request
+        ) { (result: Result<OAuthTokenResponseBody, Error>) in
             switch result {
-            case .success(let data):
-                do {
-                    let response = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                    OAuth2TokenStorage.token = response.accessToken
-                    fulfillCompletionOnTheMainThread(.success(response.accessToken))
-                } catch {
-                    fulfillCompletionOnTheMainThread(.failure(error))
-                    print("Error: decoding error \(error)")
-                }
+            case .success(let response):
+                OAuth2TokenStorage.token = response.accessToken
+                fulfillCompletionOnTheMainThread(.success(response.accessToken))
             case .failure(let error):
-                fulfillCompletionOnTheMainThread(.failure(error))
+                assertionFailure("Error: \(error)")
                 print("Error: \(error)")
+                fulfillCompletionOnTheMainThread(.failure(error))
             }
-        })
+        }
+        
+//        networkClient.performRequest(serviceType: ServiceType.oauth2, request: request, handler: { result in
+//            switch result {
+//            case .success(let data):
+//                do {
+//                    let response = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+//                    OAuth2TokenStorage.token = response.accessToken
+//                    fulfillCompletionOnTheMainThread(.success(response.accessToken))
+//                } catch {
+//                    fulfillCompletionOnTheMainThread(.failure(error))
+//                    print("Error: decoding error \(error)")
+//                }
+//            case .failure(let error):
+//                fulfillCompletionOnTheMainThread(.failure(error))
+//                print("Error: \(error)")
+//            }
+//        })
     }
     
     // MARK: - Private Methods

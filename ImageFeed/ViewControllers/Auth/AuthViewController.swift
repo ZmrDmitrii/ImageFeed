@@ -49,8 +49,16 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 case .success:
                     self.delegate?.didAuthenticate(self)
                 case .failure(let error):
-                    // TODO: показ алерта
-                    print("Error: show alert \(error)")
+                    print("Error: unable to log in. \(error)")
+                    
+                    let alert = UIAlertController(
+                        title: "Что-то пошло не так",
+                        message: "Не удалось войти в систему",
+                        preferredStyle: .alert
+                    )
+                    let action = UIAlertAction(title: "Ок", style: .default, handler: nil)
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
                 }
             }
         })
