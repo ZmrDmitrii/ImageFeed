@@ -10,6 +10,7 @@ final class SplashViewController: UIViewController {
     
     // MARK: - Private Properties
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     // MARK: - View Life Cycle
     override func viewDidAppear(_ animated: Bool) {
@@ -56,12 +57,26 @@ extension SplashViewController: AuthViewControllerDelegate {
                 case .success(let profile):
                     self.switchToTabBarController()
                     ProfileStorage.profile = profile
+                    fetchProfileImageURL(username: profile.username)
                 case .failure(let error):
-                    // TODO: показ алерта
+                    // TODO: показ алерта если не получилось получить информацию профиля
                     print("Error: show alert \(error)")
                     
                 }
             }
+        }
+    }
+    
+    private func fetchProfileImageURL(username: String) {
+        profileImageService.fetchProfileImageURL(username: username) { result in
+            switch result {
+            case .success(let avatarURL):
+                ProfileStorage.avatarURL = avatarURL
+            case .failure(let error):
+                //TODO: показ алерта если не получилось получить URL аватара
+                print("Error: show alert \(error)")
+            }
+            
         }
     }
 }

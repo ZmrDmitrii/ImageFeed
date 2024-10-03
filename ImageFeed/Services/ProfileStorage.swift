@@ -8,4 +8,5 @@ import Foundation
 
 final class ProfileStorage {
     static var profile: ProfileViewModel?
+    static var avatarURL: String?
 }

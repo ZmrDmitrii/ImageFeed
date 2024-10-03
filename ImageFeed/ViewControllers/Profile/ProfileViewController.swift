@@ -28,11 +28,27 @@ final class ProfileViewController: UIViewController {
     private let profileService = ProfileService.shared
     private var profile: ProfileViewModel?
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+//    private var avatarURL: String?
+    
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         profile = ProfileStorage.profile
+//        avatarURL = ProfileStorage.avatarURL
+        
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main,
+            using: { [weak self] _ in
+                guard let self else { return }
+                self.updateAvatar()
+            }
+        )
+        
         setupLayout()
+        updateAvatar()
     }
     
     // MARK: - Button Actions
@@ -94,6 +110,16 @@ final class ProfileViewController: UIViewController {
             descriptionLabel.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: 8),
             descriptionLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor)
         ])
+    }
+    
+    private func updateAvatar() {
+        
+        guard let avatarURL = ProfileStorage.avatarURL,
+              let url = URL(string: avatarURL)
+        else { return }
+        
+        // TODO: Обновить аватар, используя Kingfisher
+        
     }
 }
 

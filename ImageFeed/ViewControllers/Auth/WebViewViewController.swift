@@ -16,44 +16,55 @@ final class WebViewViewController: UIViewController {
     // MARK: - Public Properties
     weak var delegate: WebViewViewControllerDelegate?
     
+    // MARK: - Private Properties
+    private var estimatedProgressObservation: NSKeyValueObservation?
+    
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         backwardButton.setTitle("", for: .normal)
         loadAuthView()
         webView.navigationDelegate = self
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        webView.addObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            options: .new,
-            context: nil)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        webView.removeObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            context: nil)
-    }
-    
-    // MARK: - Override Methods
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
-        context: UnsafeMutableRawPointer?
-    ) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: []
+        ) { [weak self] _, _ in
+            guard let self else { return }
+            self.updateProgress()
         }
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        webView.addObserver(
+//            self,
+//            forKeyPath: #keyPath(WKWebView.estimatedProgress),
+//            options: .new,
+//            context: nil)
+//    }
+//    
+//    override func viewDidDisappear(_ animated: Bool) {
+//        super.viewDidDisappear(animated)
+//        webView.removeObserver(
+//            self,
+//            forKeyPath: #keyPath(WKWebView.estimatedProgress),
+//            context: nil)
+//    }
+    
+    // MARK: - Override Methods
+//    override func observeValue(
+//        forKeyPath keyPath: String?,
+//        of object: Any?,
+//        change: [NSKeyValueChangeKey : Any]?,
+//        context: UnsafeMutableRawPointer?
+//    ) {
+//        if keyPath == #keyPath(WKWebView.estimatedProgress) {
+//            updateProgress()
+//        } else {
+//            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+//        }
+//    }
     
     // MARK: - IB Action
     @IBAction private func didTapBackwardButton(_ sender: Any) {

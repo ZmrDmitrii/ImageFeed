@@ -35,6 +35,7 @@ struct NetworkClient: NetworkRouting {
                             handler(.failure(NetworkClient.httpStatusCode(statusCode)))
                             print("Error: HTTP Status Code \(statusCode)")
                         } else {
+                            // декодировать дату в наш тип данных для OAuth Profile и ProfileImage
                             handler(.success(data))
                         }
                 } else if let error {
@@ -68,4 +69,6 @@ struct NetworkClient: NetworkRouting {
             break
         }
     }
+    
+    private func 
 }
