@@ -29,22 +29,16 @@ final class OAuth2Service {
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         
-        let fulfillCompletionOnTheMainThread: (Result<String, Error>) -> Void = { result in
-            DispatchQueue.main.async {
-                completion(result)
-            }
-        }
-        
         if task != nil {
             if lastCode != code {
                 task?.cancel()
             } else {
-                fulfillCompletionOnTheMainThread(.failure(AuthServiceError.invalidRequest))
+                completion(.failure(AuthServiceError.invalidRequest))
                 return
             }
         } else {
             if lastCode == code {
-                fulfillCompletionOnTheMainThread(.failure(AuthServiceError.invalidRequest))
+                completion(.failure(AuthServiceError.invalidRequest))
                 return
             }
         }
@@ -53,23 +47,25 @@ final class OAuth2Service {
         guard let request = createURLRequest(code: code) else {
             assertionFailure("Error: failed to create URL Request")
             print("Error: failed to create URL Request")
-            fulfillCompletionOnTheMainThread(.failure(AuthServiceError.invalidRequest))
+            completion(.failure(AuthServiceError.invalidRequest))
             return
         }
         
-        networkClient.performRequestAndDecode(
-            serviceType: .oauth2,
+        task = networkClient.performRequestAndDecode(
             request: request
         ) { (result: Result<OAuthTokenResponseBody, Error>) in
             switch result {
             case .success(let response):
                 OAuth2TokenStorage.token = response.accessToken
-                fulfillCompletionOnTheMainThread(.success(response.accessToken))
+                completion(.success(response.accessToken))
             case .failure(let error):
                 assertionFailure("Error: \(error)")
                 print("Error: \(error)")
-                fulfillCompletionOnTheMainThread(.failure(error))
+                completion(.failure(error))
             }
+            
+            self.task = nil
+            self.lastCode = nil
         }
     }
     

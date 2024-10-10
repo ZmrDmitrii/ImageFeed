@@ -10,7 +10,7 @@ struct ImageSize: Codable {
     let small: String
 }
 
-struct ProfileImageResult: Codable {
+struct ProfileImageResult: Decodable {
     let profileImage: ImageSize
     
     private enum CodingKeys: String, CodingKey {

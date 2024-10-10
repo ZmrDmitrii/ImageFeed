@@ -22,26 +22,19 @@ final class ProfileImageService {
     // Функция получает маленькую версию аватарки
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
         
-        let fulfillCompletionOnTheMainThread: (Result<String, Error>) -> Void = { result in
-            DispatchQueue.main.async {
-                completion(result)
-            }
-        }
-        
         guard let request = createURLRequest(username: username) else {
             assertionFailure("Error: unable to create URL request")
             print("Error: unable to create URL request")
             return
         }
         
-        networkClient.performRequestAndDecode(
-            serviceType: .profile,
+        _ = networkClient.performRequestAndDecode(
             request: request
         ) { [weak self] (result: Result<ProfileImageResult, Error>) in
             switch result {
             case .success(let response):
                 let avatarURL = response.profileImage.small
-                fulfillCompletionOnTheMainThread(.success(avatarURL))
+                completion(.success(avatarURL))
                 
                 NotificationCenter.default.post(
                     name: ProfileImageService.didChangeNotification,
@@ -51,7 +44,7 @@ final class ProfileImageService {
             case .failure(let error):
                 assertionFailure("Error: \(error)")
                 print("Error: \(error)")
-                fulfillCompletionOnTheMainThread(.failure(error))
+                completion(.failure(error))
             }
         }
     }

@@ -8,10 +8,9 @@ import Foundation
 
 protocol NetworkRouting {
     func performRequestAndDecode<T: Decodable>(
-        serviceType: ServiceType,
         request: URLRequest,
         completion: @escaping (Result<T, Error>) -> Void
-    )
+    ) -> URLSessionDataTask?
 }
 
 struct NetworkClient: NetworkRouting {
@@ -24,7 +23,8 @@ struct NetworkClient: NetworkRouting {
     }
     
     // MARK: - Private Properties
-    private var oAuth2Service: OAuth2Service
+    private let oAuth2Service: OAuth2Service
+    private let decoder = JSONDecoder()
     
     // MARK: Initializers
     init(oAuth2Service: OAuth2Service = OAuth2Service.shared) {
@@ -33,10 +33,9 @@ struct NetworkClient: NetworkRouting {
     
     // MARK: - Public Methods
     func performRequestAndDecode<T: Decodable>(
-        serviceType: ServiceType,
         request: URLRequest,
         completion: @escaping (Result<T, Error>) -> Void
-    ) {
+    ) -> URLSessionDataTask? {
         
         let fulfillCompletionOnTheMainThread: (Result<T, Error>) -> Void = { result in
             DispatchQueue.main.async {
@@ -44,11 +43,11 @@ struct NetworkClient: NetworkRouting {
             }
         }
         
-        performRequest(serviceType: serviceType, request: request) { result in
+        let task = performRequest(request: request) { result in
             switch result {
             case .success(let data):
                 do {
-                    let response = try JSONDecoder().decode(T.self, from: data)
+                    let response = try decoder.decode(T.self, from: data)
                     fulfillCompletionOnTheMainThread(.success(response))
                 } catch {
                     assertionFailure("Error: decoding error \(error.localizedDescription), Data: \(String(data: data, encoding: .utf8) ?? "")")
@@ -61,13 +60,14 @@ struct NetworkClient: NetworkRouting {
                 fulfillCompletionOnTheMainThread(.failure(error))
             }
         }
+        return task
     }
     
     
     // MARK: - Private Methods
-    private func performRequest(serviceType: ServiceType, request: URLRequest, handler: @escaping (Result<Data, any Error>) -> Void) {
+    private func performRequest(request: URLRequest, handler: @escaping (Result<Data, any Error>) -> Void) -> URLSessionDataTask? {
         
-        let task: URLSessionDataTask = URLSession.shared.dataTask(with: request) { [weak oAuth2Service] data, response, error in
+        let task: URLSessionDataTask = URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 if let response,
                    let data,
@@ -88,27 +88,9 @@ struct NetworkClient: NetworkRouting {
                     print("Error: URL Session Error")
                     handler(.failure(NetworkClient.urlSessionError))
                 }
-                handleRaceCondition(serviceType: serviceType, oAuth2Service: oAuth2Service)
             }
         }
-        
-        if serviceType == ServiceType.oauth2 {
-            oAuth2Service.task = task
-        } else {
-            // TODO: обработка для Profile, если нужна
-        }
-        
         task.resume()
-    }
-    
-    private func handleRaceCondition(serviceType: ServiceType, oAuth2Service: OAuth2Service?) {
-        switch serviceType {
-        case .oauth2:
-            oAuth2Service?.task = nil
-            oAuth2Service?.lastCode = nil
-        case .profile:
-            //TODO: обработка race condition для profile, если нужна
-            break
-        }
+        return task
     }
 }

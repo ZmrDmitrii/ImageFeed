@@ -23,7 +23,6 @@
 		D1B9C8502CA51F9500C91E11 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C84F2CA51F9500C91E11 /* ProfileService.swift */; };
 		D1B9C8522CA51FE900C91E11 /* ProfileResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C8512CA51FE900C91E11 /* ProfileResult.swift */; };
 		D1B9C8542CA521EB00C91E11 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C8532CA521EB00C91E11 /* ProfileViewModel.swift */; };
-		D1B9C8582CA532A600C91E11 /* ServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B9C8572CA532A600C91E11 /* ServiceType.swift */; };
 		D1DA7FF72C70717A007AFC92 /* ImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA7FF62C70717A007AFC92 /* ImageViewModel.swift */; };
 		D1E0CA862C902D25007BE2DD /* OAuth2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E0CA852C902D25007BE2DD /* OAuth2Service.swift */; };
 		D1E0CA882C903610007BE2DD /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E0CA872C903610007BE2DD /* NetworkClient.swift */; };
@@ -55,7 +54,6 @@
 		D1B9C84F2CA51F9500C91E11 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		D1B9C8512CA51FE900C91E11 /* ProfileResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResult.swift; sourceTree = "<group>"; };
 		D1B9C8532CA521EB00C91E11 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
-		D1B9C8572CA532A600C91E11 /* ServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceType.swift; sourceTree = "<group>"; };
 		D1DA7FF62C70717A007AFC92 /* ImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewModel.swift; sourceTree = "<group>"; };
 		D1E0CA852C902D25007BE2DD /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Service.swift; sourceTree = "<group>"; };
 		D1E0CA872C903610007BE2DD /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
@@ -108,7 +106,6 @@
 			isa = PBXGroup;
 			children = (
 				D10174B52C86C87F0019EDF3 /* Constants.swift */,
-				D1B9C8572CA532A600C91E11 /* ServiceType.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -317,7 +314,6 @@
 				D11270D42CABFD5900BC6C47 /* ProfileImageResult.swift in Sources */,
 				D1E944F42C5F83D5008883F8 /* ImagesListViewController.swift in Sources */,
 				D1DA7FF72C70717A007AFC92 /* ImageViewModel.swift in Sources */,
-				D1B9C8582CA532A600C91E11 /* ServiceType.swift in Sources */,
 				D15958112C77275C004202D2 /* SingleImageViewController.swift in Sources */,
 				D12DD4A22C68A72400ADC1B3 /* ImagesListCell.swift in Sources */,
 				D11270D22CABFC0000BC6C47 /* ProfileImageService.swift in Sources */,

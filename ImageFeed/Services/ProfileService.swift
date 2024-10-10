@@ -20,34 +20,27 @@ final class ProfileService {
     // MARK: - Public Methods
     func fetchProfile(completion: @escaping (Result<ProfileViewModel, Error>) -> Void) {
         
-        let fulfillCompletionOnTheMainThread: (Result<ProfileViewModel, Error>) -> Void = { result in
-            DispatchQueue.main.async {
-                completion(result)
-            }
-        }
-        
         guard let request = createURLRequest() else {
             assertionFailure("Error: unable to create URL request")
             print("Error: unable to create URL request")
             return
         }
         
-        networkClient.performRequestAndDecode(
-            serviceType: .profile,
+        _ = networkClient.performRequestAndDecode(
             request: request
         ) { [weak self] (result: Result<ProfileResult, Error>) in
             switch result {
             case .success(let response):
                 guard let profile = self?.createProfileViewModel(from: response) else {
-                    assertionFailure("Error: unable to create Profile View Model")
+//                    assertionFailure("Error: unable to create Profile View Model")
                     print("Error: unable to create Profile View Model")
                     return
                 }
-                fulfillCompletionOnTheMainThread(.success(profile))
+                completion(.success(profile))
             case .failure(let error):
                 assertionFailure("Error: \(error)")
                 print("Error: \(error)")
-                fulfillCompletionOnTheMainThread(.failure(error))
+                completion(.failure(error))
             }
         }
     }
@@ -68,7 +61,7 @@ final class ProfileService {
     
     private func createProfileViewModel(from response: ProfileResult) -> ProfileViewModel {
         return ProfileViewModel(username: response.username,
-                                name: response.firstName + " " + response.lastName,
+                                name: response.firstName + " " + (response.lastName ?? ""),
                                 loginName: "@" + response.username,
                                 bio: response.bio)
     }
