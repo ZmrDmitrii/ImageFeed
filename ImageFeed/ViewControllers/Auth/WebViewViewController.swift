@@ -35,37 +35,6 @@ final class WebViewViewController: UIViewController {
         }
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        webView.addObserver(
-//            self,
-//            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-//            options: .new,
-//            context: nil)
-//    }
-//    
-//    override func viewDidDisappear(_ animated: Bool) {
-//        super.viewDidDisappear(animated)
-//        webView.removeObserver(
-//            self,
-//            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-//            context: nil)
-//    }
-    
-    // MARK: - Override Methods
-//    override func observeValue(
-//        forKeyPath keyPath: String?,
-//        of object: Any?,
-//        change: [NSKeyValueChangeKey : Any]?,
-//        context: UnsafeMutableRawPointer?
-//    ) {
-//        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-//            updateProgress()
-//        } else {
-//            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-//        }
-//    }
-    
     // MARK: - IB Action
     @IBAction private func didTapBackwardButton(_ sender: Any) {
         delegate?.webViewViewControllerDidCancel(self)
@@ -141,17 +110,5 @@ extension WebViewViewController: WKNavigationDelegate {
         // Если параметр с именем "code" найден в URL - навигация отменятся (.cancel) - пользователь авторизовался
         delegate?.webViewViewController(self, didAuthenticateWithCode: code)
         decisionHandler(.cancel)
-        
-        
-        
-//        // Функция code(from:) проверяет, есть ли в URL, на который хочет перейти пользователь, параметр "code"
-//        if let code = code(from: navigationAction) {
-//            // Если параметр с именем "code" найден в URL - навигация отменятся (.cancel) - пользователь авторизовался
-//            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
-//            decisionHandler(.cancel)
-//        } else {
-//            // Если параметр с именем "code" не найден в URL - разрешаем навигацию дальше - пользователь просто переходит на другую страницу
-//            decisionHandler(.allow)
-//        }
     }
 }

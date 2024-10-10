@@ -13,27 +13,54 @@ final class SplashViewController: UIViewController {
     private let profileImageService = ProfileImageService.shared
     
     // MARK: - View Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupLayout()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
         if OAuth2TokenStorage.token != nil {
             fetchProfile()
         } else {
-            let authViewController = storyboard?.instantiateViewController(withIdentifier: Constants.authVCIdentifier) as? AuthViewController
-            authViewController?.delegate = self
-            authViewController?.modalPresentationStyle = .fullScreen
-            present(authViewController ?? self, animated: true, completion: nil)
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+            
+            guard let authViewController = storyboard.instantiateViewController(
+                withIdentifier: Constants.authVCIdentifier
+            ) as? AuthViewController
+            else {
+                return
+            }
+            
+            authViewController.delegate = self
+            authViewController.modalPresentationStyle = .fullScreen
+            present(authViewController, animated: true, completion: nil)
         }
     }
     
     // MARK: - Private Methods
+    private func setupLayout() {
+        view.backgroundColor = UIColor.ypBackground
+        
+        let splashImage = UIImage.launchScreen
+        let splashImageView = UIImageView(image: splashImage)
+        splashImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(splashImageView)
+        
+        NSLayoutConstraint.activate([
+            splashImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            splashImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid window configuration")
             return
         }
-        
-        let tabBarViewController = storyboard?.instantiateViewController(withIdentifier: Constants.tabBarVCIdentifier)
-        
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        let tabBarViewController = storyboard.instantiateViewController(withIdentifier: Constants.tabBarVCIdentifier)
         window.rootViewController = tabBarViewController
     }
 }
@@ -61,7 +88,6 @@ extension SplashViewController: AuthViewControllerDelegate {
                 case .failure(let error):
                     // TODO: показ алерта если не получилось получить информацию профиля
                     print("Error: show alert \(error)")
-                    
                 }
             }
         }
@@ -76,7 +102,6 @@ extension SplashViewController: AuthViewControllerDelegate {
                 //TODO: показ алерта если не получилось получить URL аватара
                 print("Error: show alert \(error)")
             }
-            
         }
     }
 }

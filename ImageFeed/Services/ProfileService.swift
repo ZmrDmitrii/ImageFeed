@@ -50,29 +50,6 @@ final class ProfileService {
                 fulfillCompletionOnTheMainThread(.failure(error))
             }
         }
-        
-//        networkClient.performRequest(serviceType: ServiceType.profile, request: request) { [weak self] result in
-//            switch result {
-//            case .success(let data):
-//                do {
-//                    let response = try JSONDecoder().decode(ProfileResult.self, from: data)
-//                    guard let profile = self?.createProfileViewModel(from: response) else {
-//                        assertionFailure("Error: unable to create Profile View Model")
-//                        print("Error: unable to create Profile View Model")
-//                        return
-//                    }
-//                    fulfillCompletionOnTheMainThread(.success(profile))
-//                } catch {
-//                    fulfillCompletionOnTheMainThread(.failure(error))
-//                    assertionFailure("Error: decoding error \(error)")
-//                    print("Error: decoding error \(error)")
-//                }
-//            case .failure(let error):
-//                fulfillCompletionOnTheMainThread(.failure(error))
-//                assertionFailure("Error: \(error)")
-//                print("Error: \(error)")
-//            }
-//        }
     }
     
     // MARK: - Private Methods

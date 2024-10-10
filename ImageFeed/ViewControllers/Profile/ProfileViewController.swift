@@ -5,12 +5,13 @@
 //  Created by Дмитрий Замараев on 17/8/24.
 //
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
     // MARK: - Private Properties
     private lazy var profileImageView: UIImageView = {
-        let profileImage = UIImage.profile
+        let profileImage = UIImage()
         let profileImageView = UIImageView(image: profileImage)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(profileImageView)
@@ -29,13 +30,11 @@ final class ProfileViewController: UIViewController {
     private var profile: ProfileViewModel?
     
     private var profileImageServiceObserver: NSObjectProtocol?
-//    private var avatarURL: String?
     
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         profile = ProfileStorage.profile
-//        avatarURL = ProfileStorage.avatarURL
         
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
@@ -113,13 +112,13 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateAvatar() {
-        
         guard let avatarURL = ProfileStorage.avatarURL,
               let url = URL(string: avatarURL)
         else { return }
-        
-        // TODO: Обновить аватар, используя Kingfisher
-        
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        profileImageView.kf.setImage(with: url,
+                                     placeholder: UIImage.stub,
+                                     options: [.processor(processor)])
     }
 }
 

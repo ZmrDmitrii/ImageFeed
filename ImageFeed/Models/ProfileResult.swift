@@ -6,7 +6,6 @@
 //
 import Foundation
 
-// Проверить по документации и самому отправить запрос: Какие поля могут быть опциональными (предполагаю bio)
 struct ProfileResult: Codable {
     let username: String
     let firstName: String

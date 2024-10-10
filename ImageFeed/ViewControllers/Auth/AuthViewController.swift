@@ -13,12 +13,14 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
     
-    // MARK: - Private Properties
-    private let oAuth2Service = OAuth2Service.shared
-    weak var delegate: AuthViewControllerDelegate? = nil
-    
     // MARK: - IB Outlets
     @IBOutlet weak var logInButton: UIButton!
+    
+    // MARK: - Public Properties
+    weak var delegate: AuthViewControllerDelegate? = nil
+    
+    // MARK: - Private Properties
+    private let oAuth2Service = OAuth2Service.shared
     
     // MARK: - Navigation
     // При нажатии на "Войти" AuthVC становится делегатом WebViewVC

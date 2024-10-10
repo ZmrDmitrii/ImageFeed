@@ -7,8 +7,6 @@
 import Foundation
 
 protocol NetworkRouting {
-//    func performRequest(serviceType: ServiceType, request: URLRequest, handler: @escaping (Result<Data, Error>) -> Void)
-    
     func performRequestAndDecode<T: Decodable>(
         serviceType: ServiceType,
         request: URLRequest,
@@ -18,14 +16,17 @@ protocol NetworkRouting {
 
 struct NetworkClient: NetworkRouting {
     
+    // MARK: - Errors
     private enum NetworkClient: Error {
         case httpStatusCode(Int)
         case urlRequestError(Error)
         case urlSessionError
     }
     
+    // MARK: - Private Properties
     private var oAuth2Service: OAuth2Service
     
+    // MARK: Initializers
     init(oAuth2Service: OAuth2Service = OAuth2Service.shared) {
         self.oAuth2Service = oAuth2Service
     }

@@ -17,9 +17,3 @@ struct ProfileImageResult: Codable {
         case profileImage = "profile_image"
     }
 }
-
-func maxTwoValues<T: Comparable>(a: T, b: T) -> T {
-    return a > b ? a : b
-}
-
-
