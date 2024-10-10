@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct ImageSize: Codable {
+struct ImageSize: Decodable {
     let small: String
 }
 
