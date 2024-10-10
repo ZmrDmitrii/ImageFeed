@@ -5,12 +5,13 @@
 //  Created by Дмитрий Замараев on 17/8/24.
 //
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
     // MARK: - Private Properties
     private lazy var profileImageView: UIImageView = {
-        let profileImage = UIImage.profile
+        let profileImage = UIImage()
         let profileImageView = UIImageView(image: profileImage)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(profileImageView)
@@ -25,10 +26,28 @@ final class ProfileViewController: UIViewController {
         return profileImageView
     }()
     
+    private let profileService = ProfileService.shared
+    private var profile: ProfileViewModel?
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        profile = ProfileStorage.profile
+        
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main,
+            using: { [weak self] _ in
+                guard let self else { return }
+                self.updateAvatar()
+            }
+        )
+        
         setupLayout()
+        updateAvatar()
     }
     
     // MARK: - Button Actions
@@ -62,21 +81,21 @@ final class ProfileViewController: UIViewController {
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nameLabel)
-        nameLabel.text = "Екатерина Новикова"
+        nameLabel.text = profile?.name
         nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         nameLabel.textColor = UIColor.ypWhite
         
         let nicknameLabel = UILabel()
         nicknameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nicknameLabel)
-        nicknameLabel.text = "@ekaterina_nov"
+        nicknameLabel.text = profile?.loginName
         nicknameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         nicknameLabel.textColor = UIColor.ypGrey
         
         let descriptionLabel = UILabel()
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(descriptionLabel)
-        descriptionLabel.text = "Hello, world!"
+        descriptionLabel.text = profile?.bio
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.textColor = UIColor.ypWhite
         
@@ -90,6 +109,16 @@ final class ProfileViewController: UIViewController {
             descriptionLabel.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: 8),
             descriptionLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor)
         ])
+    }
+    
+    private func updateAvatar() {
+        guard let avatarURL = ProfileStorage.avatarURL,
+              let url = URL(string: avatarURL)
+        else { return }
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        profileImageView.kf.setImage(with: url,
+                                     placeholder: UIImage.stub,
+                                     options: [.processor(processor)])
     }
 }
 
