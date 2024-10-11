@@ -5,6 +5,7 @@
 //  Created by Дмитрий Замараев on 4/9/24.
 //
 import UIKit
+import ProgressHUD
 
 protocol AuthViewControllerDelegate: AnyObject {
     func didAuthenticate(_ vc: AuthViewController)
@@ -12,12 +13,14 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
     
-    // MARK: - Private Properties
-    private let oAuth2Service = OAuth2Service.shared
-    weak var delegate: AuthViewControllerDelegate? = nil
-    
     // MARK: - IB Outlets
     @IBOutlet weak var logInButton: UIButton!
+    
+    // MARK: - Public Properties
+    weak var delegate: AuthViewControllerDelegate? = nil
+    
+    // MARK: - Private Properties
+    private let oAuth2Service = OAuth2Service.shared
     
     // MARK: - Navigation
     // При нажатии на "Войти" AuthVC становится делегатом WebViewVC
@@ -39,16 +42,25 @@ extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         vc.dismiss(animated: true, completion: nil)
-        
+        UIBlockingProgressHUD.show()
         oAuth2Service.fetchOAuthToken(code: code, completion: { [weak self] result in
             DispatchQueue.main.async {
                 guard let self else { return }
+                UIBlockingProgressHUD.dismiss()
                 switch result {
                 case .success:
                     self.delegate?.didAuthenticate(self)
                 case .failure(let error):
-                    // TODO: показ алерта
-                    print("Error: show alert \(error)")
+                    print("Error: unable to log in. \(error)")
+                    
+                    let alert = UIAlertController(
+                        title: "Что-то пошло не так",
+                        message: "Не удалось войти в систему",
+                        preferredStyle: .alert
+                    )
+                    let action = UIAlertAction(title: "Ок", style: .default, handler: nil)
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
                 }
             }
         })
