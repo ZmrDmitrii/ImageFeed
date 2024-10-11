@@ -24,7 +24,7 @@ final class ImagesListService {
     private var task: URLSessionTask?
     
     // MARK: - Public Methods
-    private func fetchPhotosNextPage() {
+    func fetchPhotosNextPage() {
         
         if task != nil { return }
         
@@ -65,6 +65,12 @@ final class ImagesListService {
     
     // MARK: - Private Methods
     private func createURLRequest(nextPage: Int) -> URLRequest? {
+        guard let authToken = OAuth2TokenStorage.token else {
+            assertionFailure("Error: authorization (bearer) token is not found")
+            print("Error: authorization (bearer) token is not found")
+            return nil
+        }
+        
         let baseURL = Constants.defaultBaseURL.appendingPathComponent("photos")
         
         guard var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
@@ -84,7 +90,8 @@ final class ImagesListService {
             return nil
         }
         
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         return request
     }
     
