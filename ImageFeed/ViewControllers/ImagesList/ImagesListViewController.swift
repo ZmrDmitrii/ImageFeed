@@ -71,6 +71,10 @@ extension ImagesListViewController: UITableViewDataSource {
         
         return imagesListCell
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // TODO: Добавить функционал вызова функции из ImageListService
+    }
 }
 
 // MARK: - UITableViewDelegate

@@ -47,6 +47,7 @@ struct NetworkClient: NetworkRouting {
             switch result {
             case .success(let data):
                 do {
+                    decoder.dateDecodingStrategy = .iso8601
                     let response = try decoder.decode(T.self, from: data)
                     fulfillCompletionOnTheMainThread(.success(response))
                 } catch {
