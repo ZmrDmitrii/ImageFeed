@@ -12,7 +12,9 @@ final class ImagesListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     
     // MARK: - Private properties
-    private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+//    private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private var imagesListServiceObserver: NSObjectProtocol?
+    private var photos: [PhotoViewModel] = []
     
     // MARK: - Date Formatter
     private lazy var dateFormatter: DateFormatter = {
@@ -29,6 +31,22 @@ final class ImagesListViewController: UIViewController {
         tableView.delegate = self
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 4, right: 0)
         tableView.showsVerticalScrollIndicator = false
+        
+        imagesListServiceObserver = NotificationCenter.default.addObserver(
+            forName: ImagesListService.didChangeNotification,
+            object: nil,
+            queue: .main,
+            using: { [weak self] notification in
+                guard let self else { return }
+                
+                if let userInfo = notification.userInfo,
+                   let updatedPhotos = userInfo["photos"] as? [PhotoViewModel] {
+                    self.updateTableViewAnimated(updatedPhotos: updatedPhotos)
+                }
+                
+                
+            }
+        )
     }
     
     // MARK: - Navigation
@@ -48,14 +66,31 @@ final class ImagesListViewController: UIViewController {
             super.prepare(for: segue, sender: sender)
         }
     }
+    
+    // MARK: - Private Methods
+    private func updateTableViewAnimated(updatedPhotos: [PhotoViewModel]) {
+        let oldCount = photos.count
+        let newCount = updatedPhotos.count
+        photos = updatedPhotos
+        if oldCount != newCount {
+            let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
+            tableView.performBatchUpdates {
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            }
+        }
+        // Сюда передается массив photos. Нужно как-то сделать чтобы эти фото отображались в таблице.
+    }
 }
 
 // MARK: UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
+    
+    // TODO: реализовать с использованием photos
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        photosName.count
+        photos.count
     }
     
+    // TODO: реализовать с использованием photos
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
         

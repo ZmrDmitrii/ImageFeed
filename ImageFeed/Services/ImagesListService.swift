@@ -42,6 +42,7 @@ final class ImagesListService {
             switch result {
             case .success(let response):
                 let newPhotos = response.compactMap { self?.createPhotoViewModel(from: $0) }
+                self?.lastLoadedPage = nextPage
                 self?.addPhoto(newPhotos)
                 
 //                for piece in response {
@@ -59,7 +60,6 @@ final class ImagesListService {
             }
             
             self?.task = nil
-            self?.lastLoadedPage = nextPage
         }
     }
     
@@ -116,7 +116,8 @@ final class ImagesListService {
             self.photos.append(contentsOf: arrayOfPhotos)
             NotificationCenter.default.post(
                 name: ImagesListService.didChangeNotification,
-                object: self
+                object: self,
+                userInfo: ["photos": self.photos]
             )
         }
     }
