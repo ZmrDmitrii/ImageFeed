@@ -5,6 +5,7 @@
 //  Created by Дмитрий Замараев on 4/8/24.
 //
 import UIKit
+import Kingfisher
 
 final class ImagesListViewController: UIViewController {
     
@@ -15,6 +16,7 @@ final class ImagesListViewController: UIViewController {
 //    private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private var imagesListServiceObserver: NSObjectProtocol?
     private var photos: [PhotoViewModel] = []
+    private let imagesListService = ImagesListService.shared
     
     // MARK: - Date Formatter
     private lazy var dateFormatter: DateFormatter = {
@@ -32,6 +34,8 @@ final class ImagesListViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 4, right: 0)
         tableView.showsVerticalScrollIndicator = false
         
+        imagesListService.fetchPhotosNextPage()
+        
         imagesListServiceObserver = NotificationCenter.default.addObserver(
             forName: ImagesListService.didChangeNotification,
             object: nil,
@@ -39,29 +43,31 @@ final class ImagesListViewController: UIViewController {
             using: { [weak self] notification in
                 guard let self else { return }
                 
-                if let userInfo = notification.userInfo,
-                   let updatedPhotos = userInfo["photos"] as? [PhotoViewModel] {
-                    self.updateTableViewAnimated(updatedPhotos: updatedPhotos)
+                guard let userInfo = notification.userInfo,
+                      let updatedPhotos = userInfo["photos"] as? [PhotoViewModel]
+                else {
+                          assertionFailure("Error: unable to get updated photos")
+                          print("Error: unable to get updated photos")
+                          return
                 }
-                
-                
+                self.updateTableViewAnimated(updatedPhotos: updatedPhotos)
             }
         )
+
     }
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.showSingleImageSegueIdentifier {
             guard
-                let viewController = segue.destination as? SingleImageViewController,
+                let singleImageViewController = segue.destination as? SingleImageViewController,
                 let indexPath = sender as? IndexPath
             else {
                 assertionFailure("Error: invalid segue destination")
                 return
             }
-            
-            let image = UIImage(named: photosName[indexPath.row])
-            viewController.image = image
+            let imageURL = photos[indexPath.row].largeImageURL
+            singleImageViewController.imageURL = URL(string: imageURL)
         } else {
             super.prepare(for: segue, sender: sender)
         }
@@ -78,19 +84,16 @@ final class ImagesListViewController: UIViewController {
                 tableView.insertRows(at: indexPaths, with: .automatic)
             }
         }
-        // Сюда передается массив photos. Нужно как-то сделать чтобы эти фото отображались в таблице.
     }
 }
 
 // MARK: UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
     
-    // TODO: реализовать с использованием photos
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         photos.count
     }
     
-    // TODO: реализовать с использованием photos
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
         
@@ -98,26 +101,39 @@ extension ImagesListViewController: UITableViewDataSource {
             assertionFailure("Error: failed to cast the cell to the required type")
             return UITableViewCell()
         }
+        // TODO: Тут поменял thumbnail на large. Нужно поменять обратно, но не знаю что с размером
+        let urls = photos.compactMap { URL(string: $0.largeImageURL) }
+        let dates = photos.compactMap { $0.createdAt }
         
-        let model = ImageViewModel(imageName: photosName[indexPath.row],
-                                   date: dateFormatter.string(from: Date()),
+        
+        let model = ImageViewModel(thumbnailURL: urls[indexPath.row],
+                                   date: dateFormatter.string(from: dates[indexPath.row]),
                                    isLiked: (indexPath.row + 1) % 2 == 0)
-        imagesListCell.configure(with: model)
+        imagesListCell.configure(with: model) {
+            // Перезагружаю ячейку после загрузки в нее фото, чтобы обновилась высота
+            DispatchQueue.main.async {
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
+        }
         
         return imagesListCell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // TODO: Добавить функционал вызова функции из ImageListService
+        if indexPath.row == (photos.count - 1) {
+            imagesListService.fetchPhotosNextPage()
+        }
     }
 }
 
 // MARK: - UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let imageWidth = CGFloat(UIImage(named: photosName[indexPath.row])?.size.width ?? 0)
+        let imageWidth = CGFloat(photos[indexPath.row].size.width)
+            
+            /*UIImage(named: photosName[indexPath.row])?.size.width ?? 0*/
         let imageViewWidth = CGFloat(tableView.contentSize.width)
-        let imageHeight = CGFloat(UIImage(named: photosName[indexPath.row])?.size.height ?? 0)
+        let imageHeight = CGFloat(photos[indexPath.row].size.height)
         return imageHeight * (imageViewWidth / imageWidth)
     }
     

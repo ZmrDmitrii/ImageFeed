@@ -5,6 +5,7 @@
 //  Created by Дмитрий Замараев on 22/8/24.
 //
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
@@ -15,11 +16,12 @@ final class SingleImageViewController: UIViewController {
     @IBOutlet private weak var shareButton: UIButton!
     
     // MARK: - Public Properties
-    var image: UIImage? {
+    var imageURL: URL? {
         didSet {
             guard isViewLoaded else { return }
-            imageView.image = image
-            guard let image else {
+            imageView.kf.setImage(with: imageURL,
+                                  placeholder: UIImage.singleImageStub)
+            guard let image = imageView.image else {
                 assertionFailure("Error: image is not found")
                 return
             }
@@ -30,8 +32,9 @@ final class SingleImageViewController: UIViewController {
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageView.image = image
-        guard let image else {
+        imageView.kf.setImage(with: imageURL,
+                              placeholder: UIImage.singleImageStub)
+        guard let image = imageView.image else {
             assertionFailure("Error: image is not found")
             return
         }

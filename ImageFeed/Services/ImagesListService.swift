@@ -10,6 +10,7 @@ final class ImagesListService {
     
     // MARK: - Public Properties
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
+    static let shared = ImagesListService()
     
 //    private lazy var dateFormatter: DateFormatter = {
 //        let formatter = DateFormatter()
@@ -22,6 +23,9 @@ final class ImagesListService {
     private lazy var networkClient: NetworkRouting = NetworkClient()
     private var lastLoadedPage: Int?
     private var task: URLSessionTask?
+    
+    // MARK: - Initializers
+    private init() {}
     
     // MARK: - Public Methods
     func fetchPhotosNextPage() {
