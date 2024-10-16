@@ -52,7 +52,7 @@ final class ProfileViewController: UIViewController {
     
     // MARK: - Button Actions
     @objc private func didTapExitButton() {
-        //пока что пусто
+        ProfileLogoutService.shared.logout()
     }
     
     // MARK: - Private Methods
