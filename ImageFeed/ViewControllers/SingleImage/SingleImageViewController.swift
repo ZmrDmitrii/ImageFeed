@@ -18,22 +18,47 @@ final class SingleImageViewController: UIViewController {
     // MARK: - Public Properties
     var imageURL: URL? {
         didSet {
-            guard isViewLoaded else { return }
-            imageView.kf.setImage(with: imageURL,
-                                  placeholder: UIImage.singleImageStub)
-            guard let image = imageView.image else {
-                assertionFailure("Error: image is not found")
+            guard isViewLoaded else {
                 return
             }
-            rescaleAndCenterImageInScrollView(image: image)
+            // TODO: то что ниже не нужно?
+            imageView.kf.setImage(with: imageURL, placeholder: UIImage.singleImageStub) { [weak self] result in
+                switch result {
+                case .success(_):
+                    guard let image = self?.imageView.image else {
+                        assertionFailure("Error: image is not found")
+                        return
+                    }
+                    self?.rescaleAndCenterImageInScrollView(image: image)
+                case .failure(_):
+                    assertionFailure("Error: unable to load image")
+                    print("Error: unable to load image")
+                }
+            }
         }
     }
 
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        UIBlockingProgressHUD.show()
         imageView.kf.setImage(with: imageURL,
-                              placeholder: UIImage.singleImageStub)
+                              placeholder: UIImage.singleImageStub) { [weak self] result in
+            switch result {
+            case .success(_):
+                UIBlockingProgressHUD.dismiss()
+                guard let image = self?.imageView.image else {
+                    assertionFailure("Error: image is not found")
+                    return
+                }
+                self?.rescaleAndCenterImageInScrollView(image: image)
+            case .failure(_):
+                UIBlockingProgressHUD.dismiss()
+                // TODO: показать alert
+                assertionFailure("Error: unable to load image")
+                print("Error: unable to load image")
+            }
+        }
         guard let image = imageView.image else {
             assertionFailure("Error: image is not found")
             return

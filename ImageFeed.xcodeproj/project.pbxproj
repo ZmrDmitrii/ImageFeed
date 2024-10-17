@@ -180,11 +180,11 @@
 			children = (
 				D1B9C84D2CA50BC300C91E11 /* UIBlockingProgressHUD.swift */,
 				D1E0CA852C902D25007BE2DD /* OAuth2Service.swift */,
+				D18954142CBF793C0088AF10 /* ProfileLogoutService.swift */,
 				D1E0CA872C903610007BE2DD /* NetworkClient.swift */,
 				D1B9C84F2CA51F9500C91E11 /* ProfileService.swift */,
 				D11270D12CABFC0000BC6C47 /* ProfileImageService.swift */,
 				D1A7D31E2CB8D8C7005A60E1 /* ImagesListService.swift */,
-				D18954142CBF793C0088AF10 /* ProfileLogoutService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";

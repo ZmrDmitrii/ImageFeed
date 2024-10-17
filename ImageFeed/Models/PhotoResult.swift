@@ -8,12 +8,12 @@ import Foundation
 
 struct URLResult: Decodable {
     let full: String
-    let thumb: String
+    let small: String
 }
 
 struct PhotoResult: Decodable {
     let id: String
-    let createdAt: Date
+    let createdAt: String
     let width: Int
     let height: Int
     let description: String?

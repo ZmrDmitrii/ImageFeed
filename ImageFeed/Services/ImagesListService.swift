@@ -8,6 +8,11 @@ import Foundation
 
 final class ImagesListService {
     
+    // MARK: - Errors
+    enum DateConversionError: Error {
+        case invalidDateFormat
+    }
+    
     // MARK: - Public Properties
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     static let shared = ImagesListService()
@@ -18,6 +23,7 @@ final class ImagesListService {
     private var lastLoadedPage: Int?
     private var fetchTask: URLSessionDataTask?
     private var changeLikeTask: URLSessionDataTask?
+    private let dateFormatter = ISO8601DateFormatter()
     
     // MARK: - Initializers
     private init() {}
@@ -40,10 +46,18 @@ final class ImagesListService {
         ) { [weak self] (result: Result<[PhotoResult], Error>) in
             switch result {
             case .success(let response):
-                let newPhotos = response.compactMap { self?.createPhotoViewModel(from: $0) }
+                // TODO: Добавил try
+                let newPhotos = response.compactMap {
+                    do {
+                        return try self?.createPhotoViewModel(from: $0)
+                    } catch {
+                        assertionFailure("Error: unable to convert Date")
+                        print("Error: unable to convert Date")
+                        return nil
+                    }
+                }
                 self?.lastLoadedPage = nextPage
                 self?.addPhoto(newPhotos)
-                
             case .failure(let error):
                 assertionFailure("Error: \(error)")
                 print("Error: \(error)")
@@ -133,12 +147,16 @@ final class ImagesListService {
         return request
     }
     
-    private func createPhotoViewModel(from response: PhotoResult) -> PhotoViewModel {
+    private func createPhotoViewModel(from response: PhotoResult) throws -> PhotoViewModel {
+        guard let date = dateFormatter.date(from: response.createdAt) else {
+                throw DateConversionError.invalidDateFormat
+            }
+        
         return PhotoViewModel(id: response.id,
-                              createdAt: response.createdAt,
+                              createdAt: date,
                               size: CGSize(width: response.width, height: response.height),
                               welcomeDescription: response.description,
-                              thumbImageURL: response.urls.thumb,
+                              thumbImageURL: response.urls.small,
                               largeImageURL: response.urls.full,
                               isLiked: response.isLiked)
     }

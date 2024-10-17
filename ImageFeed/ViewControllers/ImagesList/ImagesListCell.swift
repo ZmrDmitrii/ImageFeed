@@ -17,7 +17,6 @@ final class ImagesListCell: UITableViewCell {
     // MARK: - Public Properties
     static let reuseIdentifier = "ImagesListCell"
     weak var delegate: ImagesListCellDelegateProtocol?
-//    static private(set) var imageSizes: [CGSize] = []
     
     // MARK: - Private Properties
     private let imagesListService = ImagesListService.shared
@@ -36,7 +35,6 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: - Public Methods
     func configure(with model: ImageViewModel, completion: () -> Void) {
-        // TODO: Проверить, правильно ли я настроил активити индикатор?
         cellImageView.kf.indicatorType = .activity
         cellImageView.kf.setImage(with: model.thumbnailURL,
                                   placeholder: UIImage.cardStub)

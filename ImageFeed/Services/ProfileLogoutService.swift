@@ -10,10 +10,13 @@ import WebKit
 
 final class ProfileLogoutService {
     
+    // MARK: - Public Properties
     static let shared = ProfileLogoutService()
     
+    // MARK: - Initializers
     private init() {}
     
+    // MARK: - Public Methods
     func logout() {
         cleanTokenStorage()
         cleanProfileInfo()
@@ -22,6 +25,7 @@ final class ProfileLogoutService {
         goToSplashScreen()
     }
     
+    // MARK: - Private Methods
     private func cleanTokenStorage() {
         OAuth2TokenStorage.token = ""
     }
@@ -48,7 +52,6 @@ final class ProfileLogoutService {
     }
     
     private func goToSplashScreen() {
-        // Перейти на экран авторизации
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid window configuration")
             return

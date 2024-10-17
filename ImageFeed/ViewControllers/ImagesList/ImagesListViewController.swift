@@ -127,11 +127,9 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         
         imagesListCell.delegate = self
-        
-        // TODO: Тут поменял thumbnail на large. Нужно поменять обратно, но не знаю что с размером
-        let urls = photos.compactMap { URL(string: $0.largeImageURL) }
+    
+        let urls = photos.compactMap { URL(string: $0.thumbImageURL) }
         let dates = photos.compactMap { $0.createdAt }
-        
         
         let model = ImageViewModel(thumbnailURL: urls[indexPath.row],
                                    date: dateFormatter.string(from: dates[indexPath.row]),
@@ -157,8 +155,6 @@ extension ImagesListViewController: UITableViewDataSource {
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let imageWidth = CGFloat(photos[indexPath.row].size.width)
-            
-            /*UIImage(named: photosName[indexPath.row])?.size.width ?? 0*/
         let imageViewWidth = CGFloat(tableView.contentSize.width)
         let imageHeight = CGFloat(photos[indexPath.row].size.height)
         return imageHeight * (imageViewWidth / imageWidth)
@@ -190,8 +186,6 @@ extension ImagesListViewController: ImagesListCellDelegateProtocol{
                 assertionFailure("Error: unable to change like. \(error)")
                 print("Error: unable to change like. \(error)")
             }
-            
-            
         }
     }
 }
