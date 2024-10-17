@@ -182,6 +182,9 @@
                                                                     </constraints>
                                                                     <state key="normal" title="Button"/>
                                                                     <buttonConfiguration key="configuration" style="plain" image="No Active"/>
+                                                                    <connections>
+                                                                        <action selector="didTapLikeButton:" destination="Y0G-Xr-PcS" eventType="touchUpInside" id="9nA-I7-p5z"/>
+                                                                    </connections>
                                                                 </button>
                                                             </subviews>
                                                             <constraints>

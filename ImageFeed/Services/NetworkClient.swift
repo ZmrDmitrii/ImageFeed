@@ -11,6 +11,10 @@ protocol NetworkRouting {
         request: URLRequest,
         completion: @escaping (Result<T, Error>) -> Void
     ) -> URLSessionDataTask?
+    func performRequest(
+        request: URLRequest,
+        handler: @escaping (Result<Data, any Error>) -> Void
+    ) -> URLSessionDataTask?
 }
 
 struct NetworkClient: NetworkRouting {
@@ -47,6 +51,7 @@ struct NetworkClient: NetworkRouting {
             switch result {
             case .success(let data):
                 do {
+                    decoder.dateDecodingStrategy = .iso8601
                     let response = try decoder.decode(T.self, from: data)
                     fulfillCompletionOnTheMainThread(.success(response))
                 } catch {
@@ -63,9 +68,7 @@ struct NetworkClient: NetworkRouting {
         return task
     }
     
-    
-    // MARK: - Private Methods
-    private func performRequest(request: URLRequest, handler: @escaping (Result<Data, any Error>) -> Void) -> URLSessionDataTask? {
+    func performRequest(request: URLRequest, handler: @escaping (Result<Data, any Error>) -> Void) -> URLSessionDataTask? {
         
         let task: URLSessionDataTask = URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {

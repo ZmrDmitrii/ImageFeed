@@ -5,6 +5,7 @@
 //  Created by Дмитрий Замараев on 22/8/24.
 //
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
@@ -15,23 +16,50 @@ final class SingleImageViewController: UIViewController {
     @IBOutlet private weak var shareButton: UIButton!
     
     // MARK: - Public Properties
-    var image: UIImage? {
+    var imageURL: URL? {
         didSet {
-            guard isViewLoaded else { return }
-            imageView.image = image
-            guard let image else {
-                assertionFailure("Error: image is not found")
+            guard isViewLoaded else {
                 return
             }
-            rescaleAndCenterImageInScrollView(image: image)
+            // TODO: то что ниже не нужно?
+            imageView.kf.setImage(with: imageURL, placeholder: UIImage.singleImageStub) { [weak self] result in
+                switch result {
+                case .success(_):
+                    guard let image = self?.imageView.image else {
+                        assertionFailure("Error: image is not found")
+                        return
+                    }
+                    self?.rescaleAndCenterImageInScrollView(image: image)
+                case .failure(_):
+                    assertionFailure("Error: unable to load image")
+                    print("Error: unable to load image")
+                }
+            }
         }
     }
 
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageView.image = image
-        guard let image else {
+        UIBlockingProgressHUD.show()
+        imageView.kf.setImage(with: imageURL,
+                              placeholder: UIImage.singleImageStub) { [weak self] result in
+            switch result {
+            case .success(_):
+                UIBlockingProgressHUD.dismiss()
+                guard let image = self?.imageView.image else {
+                    assertionFailure("Error: image is not found")
+                    return
+                }
+                self?.rescaleAndCenterImageInScrollView(image: image)
+            case .failure(_):
+                UIBlockingProgressHUD.dismiss()
+                // TODO: показать alert
+                assertionFailure("Error: unable to load image")
+                print("Error: unable to load image")
+            }
+        }
+        guard let image = imageView.image else {
             assertionFailure("Error: image is not found")
             return
         }

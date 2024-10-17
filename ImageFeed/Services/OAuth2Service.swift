@@ -19,8 +19,8 @@ final class OAuth2Service {
     // ленивая инициализация - объект будет создан при обращении к нему; разрывает цикл зависимостей
     private lazy var networkClient: NetworkRouting = NetworkClient()
     
-    var task: URLSessionTask?
-    var lastCode: String?
+    private var task: URLSessionTask?
+    private var lastCode: String?
     
     // MARK: - Initializers
     private init() {}
@@ -53,7 +53,7 @@ final class OAuth2Service {
         
         task = networkClient.performRequestAndDecode(
             request: request
-        ) { (result: Result<OAuthTokenResponseBody, Error>) in
+        ) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             switch result {
             case .success(let response):
                 OAuth2TokenStorage.token = response.accessToken
@@ -64,8 +64,8 @@ final class OAuth2Service {
                 completion(.failure(error))
             }
             
-            self.task = nil
-            self.lastCode = nil
+            self?.task = nil
+            self?.lastCode = nil
         }
     }
     
