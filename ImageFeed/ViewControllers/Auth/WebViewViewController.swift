@@ -9,17 +9,21 @@ import WebKit
 final class WebViewViewController: UIViewController {
     
     // MARK: - IB Outlets
+    
     @IBOutlet private weak var backwardButton: UIButton!
     @IBOutlet private weak var webView: WKWebView!
     @IBOutlet weak var progressView: UIProgressView!
     
-    // MARK: - Public Properties
+    // MARK: - Internal Properties
+    
     weak var delegate: WebViewViewControllerDelegate?
     
     // MARK: - Private Properties
+    
     private var estimatedProgressObservation: NSKeyValueObservation?
     
     // MARK: - View Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         backwardButton.setTitle("", for: .normal)
@@ -36,11 +40,13 @@ final class WebViewViewController: UIViewController {
     }
     
     // MARK: - IB Action
+    
     @IBAction private func didTapBackwardButton(_ sender: Any) {
         delegate?.webViewViewControllerDidCancel(self)
     }
     
     // MARK: - Private Methods
+    
     private func loadAuthView() {
         guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
             assertionFailure("Error: failed to get unsplashAuthorizeURLString")
@@ -93,6 +99,7 @@ final class WebViewViewController: UIViewController {
 }
 
 // MARK: - WKNavigationDelegate
+
 extension WebViewViewController: WKNavigationDelegate {
     // Метод decidePolicyFor вызывается, когда пользователь делает навигационное действие в WKWebView (клик по ссылке / кнопке)
     // В этом методе мы решаем, что делать с запросом на действие пользователя: запретить или разрешить

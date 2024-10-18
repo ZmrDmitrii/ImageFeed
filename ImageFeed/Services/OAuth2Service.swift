@@ -12,20 +12,24 @@ enum AuthServiceError: Error {
 
 final class OAuth2Service {
     
-    // MARK: - Public Properties
+    // MARK: - Internal Properties
+    
     static let shared = OAuth2Service()
     
     // MARK: - Private Properties
+    
     // ленивая инициализация - объект будет создан при обращении к нему; разрывает цикл зависимостей
     private lazy var networkClient: NetworkRouting = NetworkClient()
     
-    var task: URLSessionTask?
-    var lastCode: String?
+    private var task: URLSessionTask?
+    private var lastCode: String?
     
     // MARK: - Initializers
+    
     private init() {}
     
-    // MARK: - Public Methods
+    // MARK: - Internal Methods
+    
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         
@@ -43,37 +47,35 @@ final class OAuth2Service {
             }
         }
         lastCode = code
-                
+        
         guard let request = createURLRequest(code: code) else {
             assertionFailure("Error: failed to create URL Request")
-            print("Error: failed to create URL Request")
             completion(.failure(AuthServiceError.invalidRequest))
             return
         }
         
         task = networkClient.performRequestAndDecode(
             request: request
-        ) { (result: Result<OAuthTokenResponseBody, Error>) in
+        ) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             switch result {
             case .success(let response):
                 OAuth2TokenStorage.token = response.accessToken
                 completion(.success(response.accessToken))
             case .failure(let error):
                 assertionFailure("Error: \(error)")
-                print("Error: \(error)")
                 completion(.failure(error))
             }
             
-            self.task = nil
-            self.lastCode = nil
+            self?.task = nil
+            self?.lastCode = nil
         }
     }
     
     // MARK: - Private Methods
+    
     private func createURLRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: Constants.unsplashRequestAccessTokenURLString) else {
             assertionFailure("Error: failed to get unsplashRequestAccessTokenURLString")
-            print("Error: failed to get unsplashRequestAccessTokenURLString")
             return nil
         }
         
@@ -87,7 +89,6 @@ final class OAuth2Service {
         
         guard let url = urlComponents.url else {
             assertionFailure("Error: failed to get url")
-            print("Error: failed to get url")
             return nil
         }
         var request = URLRequest(url: url)

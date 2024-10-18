@@ -10,6 +10,7 @@ import Kingfisher
 final class ProfileViewController: UIViewController {
     
     // MARK: - Private Properties
+    
     private lazy var profileImageView: UIImageView = {
         let profileImage = UIImage()
         let profileImageView = UIImageView(image: profileImage)
@@ -32,6 +33,7 @@ final class ProfileViewController: UIViewController {
     private var profileImageServiceObserver: NSObjectProtocol?
     
     // MARK: - View Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         profile = ProfileStorage.profile
@@ -51,11 +53,21 @@ final class ProfileViewController: UIViewController {
     }
     
     // MARK: - Button Actions
+    
     @objc private func didTapExitButton() {
-        //пока что пусто
+        let alert = UIAlertController(title: "Пока, пока!", message: "Уверены что хотите выйти?", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "Да", style: .default, handler: { _ in
+            ProfileLogoutService.shared.logout()
+        })
+        let noAction = UIAlertAction(title: "Нет", style: .cancel)
+        
+        alert.addAction(yesAction)
+        alert.addAction(noAction)
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK: - Private Methods
+    
     private func setupLayout() {
         view.backgroundColor = UIColor.ypBackground
         createExitButton()
