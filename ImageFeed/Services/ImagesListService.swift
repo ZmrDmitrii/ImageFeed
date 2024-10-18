@@ -79,7 +79,7 @@ final class ImagesListService {
             return
         }
         
-        _ = networkClient.performRequest(
+        changeLikeTask = networkClient.performRequest(
             request: request
         ) { [weak self] result in
             switch result {
