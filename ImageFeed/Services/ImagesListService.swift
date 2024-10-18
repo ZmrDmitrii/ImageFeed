@@ -68,7 +68,10 @@ final class ImagesListService {
     
     func changeLike(photoID: String, isLiked: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
         
-        if changeLikeTask != nil { return }
+        if changeLikeTask != nil {
+            UIBlockingProgressHUD.dismiss()
+            return
+        }
         
         guard let request = createLikeURLRequest(photoID: photoID, isLiked: isLiked) else {
             assertionFailure("Error: unable to create URL request")
@@ -76,7 +79,7 @@ final class ImagesListService {
             return
         }
         
-        changeLikeTask = networkClient.performRequest(
+        _ = networkClient.performRequest(
             request: request
         ) { [weak self] result in
             switch result {
