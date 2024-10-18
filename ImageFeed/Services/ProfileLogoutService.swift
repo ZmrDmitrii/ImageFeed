@@ -10,13 +10,16 @@ import WebKit
 
 final class ProfileLogoutService {
     
-    // MARK: - Public Properties
+    // MARK: - Internal Properties
+    
     static let shared = ProfileLogoutService()
     
     // MARK: - Initializers
+    
     private init() {}
     
-    // MARK: - Public Methods
+    // MARK: - Internal Methods
+    
     func logout() {
         cleanTokenStorage()
         cleanProfileInfo()
@@ -26,6 +29,7 @@ final class ProfileLogoutService {
     }
     
     // MARK: - Private Methods
+    
     private func cleanTokenStorage() {
         OAuth2TokenStorage.token = ""
     }

@@ -10,35 +10,24 @@ import Kingfisher
 final class SingleImageViewController: UIViewController {
     
     // MARK: - IB Outlets
+    
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var backButton: UIButton!
     @IBOutlet private weak var shareButton: UIButton!
     
-    // MARK: - Public Properties
+    // MARK: - Internal Properties
+    
     var imageURL: URL? {
         didSet {
             guard isViewLoaded else {
                 return
             }
-            // TODO: то что ниже не нужно?
-            imageView.kf.setImage(with: imageURL, placeholder: UIImage.singleImageStub) { [weak self] result in
-                switch result {
-                case .success(_):
-                    guard let image = self?.imageView.image else {
-                        assertionFailure("Error: image is not found")
-                        return
-                    }
-                    self?.rescaleAndCenterImageInScrollView(image: image)
-                case .failure(_):
-                    assertionFailure("Error: unable to load image")
-                    print("Error: unable to load image")
-                }
-            }
         }
     }
-
+    
     // MARK: - View Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         UIBlockingProgressHUD.show()
@@ -56,7 +45,6 @@ final class SingleImageViewController: UIViewController {
                 UIBlockingProgressHUD.dismiss()
                 // TODO: показать alert
                 assertionFailure("Error: unable to load image")
-                print("Error: unable to load image")
             }
         }
         guard let image = imageView.image else {
@@ -73,6 +61,7 @@ final class SingleImageViewController: UIViewController {
     }
     
     // MARK: - IB Actions
+    
     @IBAction private func didTapBackButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -87,6 +76,7 @@ final class SingleImageViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         view.layoutIfNeeded()
         let visibleRectangleSize = scrollView.bounds.size
@@ -109,6 +99,7 @@ final class SingleImageViewController: UIViewController {
 }
 
 // MARK: - UIScrollViewDelegate
+
 extension SingleImageViewController : UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView

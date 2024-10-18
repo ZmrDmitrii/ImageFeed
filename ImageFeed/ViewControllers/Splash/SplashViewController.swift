@@ -9,10 +9,12 @@ import UIKit
 final class SplashViewController: UIViewController {
     
     // MARK: - Private Properties
+    
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     
     // MARK: - View Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
@@ -40,6 +42,7 @@ final class SplashViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    
     private func setupLayout() {
         view.backgroundColor = UIColor.ypBackground
         
@@ -66,6 +69,7 @@ final class SplashViewController: UIViewController {
 }
 
 // MARK: - AuthViewControllerDelegate
+
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true, completion: nil)

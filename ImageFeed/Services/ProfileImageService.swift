@@ -8,23 +8,26 @@ import Foundation
 
 final class ProfileImageService {
     
-    // MARK: - Public Properties
+    // MARK: - Internal Properties
+    
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
     // MARK: - Private Properties
+    
     private lazy var networkClient: NetworkRouting = NetworkClient()
     
     // MARK: - Initializers
+    
     private init() {}
     
-    // MARK: - Public Methods
+    // MARK: - Internal Methods
+    
     // Функция получает маленькую версию аватарки
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
         
         guard let request = createURLRequest(username: username) else {
             assertionFailure("Error: unable to create URL request")
-            print("Error: unable to create URL request")
             return
         }
         
@@ -43,20 +46,22 @@ final class ProfileImageService {
                 )
             case .failure(let error):
                 assertionFailure("Error: \(error)")
-                print("Error: \(error)")
                 completion(.failure(error))
             }
         }
     }
     
     // MARK: - Private Methods
+    
     private func createURLRequest(username: String) -> URLRequest? {
         guard let authToken = OAuth2TokenStorage.token else {
             assertionFailure("Error: authorization (bearer) token is not found")
-            print("Error: authorization (bearer) token is not found")
             return nil
         }
-        let url = Constants.defaultBaseURL.appendingPathComponent("users/\(username)")
+        guard let url = Constants.defaultBaseURL?.appendingPathComponent("users/\(username)") else {
+            assertionFailure("Error: unable to unwrap base URL")
+            return nil
+        }
         var request = URLRequest(url: url)
         
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")

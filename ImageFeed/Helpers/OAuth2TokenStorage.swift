@@ -16,7 +16,6 @@ final class OAuth2TokenStorage {
             guard let newValue else {
                 // TODO: add alert
                 assertionFailure("Error: unable to add access token to keychain")
-                print("Error: unable to add access token to keychain")
                 return
             }
             KeychainWrapper.standard.removeObject(forKey: "accessToken")

@@ -9,16 +9,19 @@ import Foundation
 final class ImagesListService {
     
     // MARK: - Errors
+    
     enum DateConversionError: Error {
         case invalidDateFormat
     }
     
-    // MARK: - Public Properties
+    // MARK: - Internal Properties
+    
+    var photos: [PhotoViewModel] = []
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     static let shared = ImagesListService()
     
     // MARK: - Private Properties
-    private(set) var photos: [PhotoViewModel] = []
+    
     private lazy var networkClient: NetworkRouting = NetworkClient()
     private var lastLoadedPage: Int?
     private var fetchTask: URLSessionDataTask?
@@ -26,18 +29,18 @@ final class ImagesListService {
     private let dateFormatter = ISO8601DateFormatter()
     
     // MARK: - Initializers
+    
     private init() {}
     
-    // MARK: - Public Methods
+    // MARK: - Internal Methods
+    
     func fetchPhotosNextPage() {
-        
-        if fetchTask != nil { return }
+        guard fetchTask == nil else { return }
         
         let nextPage = (lastLoadedPage ?? 0) + 1
-
+        
         guard let request = createURLRequest(nextPage: nextPage) else {
             assertionFailure("Error: unable to create URL request")
-            print("Error: unable to create URL request")
             return
         }
         
@@ -46,13 +49,11 @@ final class ImagesListService {
         ) { [weak self] (result: Result<[PhotoResult], Error>) in
             switch result {
             case .success(let response):
-                // TODO: Добавил try
                 let newPhotos = response.compactMap {
                     do {
                         return try self?.createPhotoViewModel(from: $0)
                     } catch {
                         assertionFailure("Error: unable to convert Date")
-                        print("Error: unable to convert Date")
                         return nil
                     }
                 }
@@ -60,7 +61,6 @@ final class ImagesListService {
                 self?.addPhoto(newPhotos)
             case .failure(let error):
                 assertionFailure("Error: \(error)")
-                print("Error: \(error)")
             }
             self?.fetchTask = nil
         }
@@ -68,14 +68,13 @@ final class ImagesListService {
     
     func changeLike(photoID: String, isLiked: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
         
-        if changeLikeTask != nil {
+        guard changeLikeTask == nil else {
             UIBlockingProgressHUD.dismiss()
             return
         }
         
         guard let request = createLikeURLRequest(photoID: photoID, isLiked: isLiked) else {
             assertionFailure("Error: unable to create URL request")
-            print("Error: unable to create URL request")
             return
         }
         
@@ -87,7 +86,6 @@ final class ImagesListService {
                 completion(.success(()))
             case .failure(let error):
                 assertionFailure("Error: \(error)")
-                print("Error: \(error)")
             }
             self?.changeLikeTask = nil
         }
@@ -105,18 +103,20 @@ final class ImagesListService {
     }
     
     // MARK: - Private Methods
+    
     private func createURLRequest(nextPage: Int) -> URLRequest? {
         guard let authToken = OAuth2TokenStorage.token else {
             assertionFailure("Error: authorization (bearer) token is not found")
-            print("Error: authorization (bearer) token is not found")
             return nil
         }
         
-        let baseURL = Constants.defaultBaseURL.appendingPathComponent("photos")
+        guard let baseURL = Constants.defaultBaseURL?.appendingPathComponent("photos") else {
+            assertionFailure("Error: unable to unwrap base URL")
+            return nil
+        }
         
         guard var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
             assertionFailure("Error: failed to get defaultBaseURL")
-            print("Error: failed to get defaultBaseURL")
             return nil
         }
         
@@ -127,7 +127,6 @@ final class ImagesListService {
         
         guard let url = urlComponents.url else {
             assertionFailure("Error: failed to get url")
-            print("Error: failed to get url")
             return nil
         }
         
@@ -139,10 +138,12 @@ final class ImagesListService {
     private func createLikeURLRequest(photoID: String, isLiked: Bool) -> URLRequest? {
         guard let authToken = OAuth2TokenStorage.token else {
             assertionFailure("Error: authorization (bearer) token is not found")
-            print("Error: authorization (bearer) token is not found")
             return nil
         }
-        let url = Constants.defaultBaseURL.appendingPathComponent("photos/\(photoID)/like")
+        guard let url = Constants.defaultBaseURL?.appendingPathComponent("photos/\(photoID)/like") else {
+            assertionFailure("Error: unable to unwrap base URL")
+            return nil
+        }
         var request = URLRequest(url: url)
         
         request.httpMethod = isLiked ? "DELETE" : "POST"
@@ -152,8 +153,8 @@ final class ImagesListService {
     
     private func createPhotoViewModel(from response: PhotoResult) throws -> PhotoViewModel {
         guard let date = dateFormatter.date(from: response.createdAt) else {
-                throw DateConversionError.invalidDateFormat
-            }
+            throw DateConversionError.invalidDateFormat
+        }
         
         return PhotoViewModel(id: response.id,
                               createdAt: date,

@@ -20,6 +20,7 @@ protocol NetworkRouting {
 struct NetworkClient: NetworkRouting {
     
     // MARK: - Errors
+    
     private enum NetworkClient: Error {
         case httpStatusCode(Int)
         case urlRequestError(Error)
@@ -27,15 +28,18 @@ struct NetworkClient: NetworkRouting {
     }
     
     // MARK: - Private Properties
+    
     private let oAuth2Service: OAuth2Service
     private let decoder = JSONDecoder()
     
     // MARK: Initializers
+    
     init(oAuth2Service: OAuth2Service = OAuth2Service.shared) {
         self.oAuth2Service = oAuth2Service
     }
     
-    // MARK: - Public Methods
+    // MARK: - Internal Methods
+    
     func performRequestAndDecode<T: Decodable>(
         request: URLRequest,
         completion: @escaping (Result<T, Error>) -> Void
@@ -56,12 +60,10 @@ struct NetworkClient: NetworkRouting {
                     fulfillCompletionOnTheMainThread(.success(response))
                 } catch {
                     assertionFailure("Error: decoding error \(error.localizedDescription), Data: \(String(data: data, encoding: .utf8) ?? "")")
-                    print("Error: decoding error \(error.localizedDescription), Data: \(String(data: data, encoding: .utf8) ?? "")")
                     fulfillCompletionOnTheMainThread(.failure(error))
                 }
             case .failure(let error):
                 assertionFailure("Error: \(error)")
-                print("Error: \(error)")
                 fulfillCompletionOnTheMainThread(.failure(error))
             }
         }
@@ -77,18 +79,15 @@ struct NetworkClient: NetworkRouting {
                    let statusCode = (response as? HTTPURLResponse)?.statusCode {
                     if statusCode < 200 || statusCode >= 300 {
                         assertionFailure("Error: HTTP Status Code \(statusCode)")
-                        print("Error: HTTP Status Code \(statusCode)")
                         handler(.failure(NetworkClient.httpStatusCode(statusCode)))
                     } else {
                         handler(.success(data))
                     }
                 } else if let error {
                     assertionFailure("Error: URL Request error \(error)")
-                    print("Error: URL Request error \(error)")
                     handler(.failure(NetworkClient.urlRequestError(error)))
                 } else {
                     assertionFailure("Error: URL Session Error")
-                    print("Error: URL Session Error")
                     handler(.failure(NetworkClient.urlSessionError))
                 }
             }

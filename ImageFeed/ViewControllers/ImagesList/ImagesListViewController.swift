@@ -10,14 +10,17 @@ import Kingfisher
 final class ImagesListViewController: UIViewController {
     
     // MARK: - IBOutlets
+    
     @IBOutlet private var tableView: UITableView!
     
     // MARK: - Private properties
+    
     private var imagesListServiceObserver: NSObjectProtocol?
     private(set) var photos: [PhotoViewModel] = []
     private let imagesListService = ImagesListService.shared
     
     // MARK: - Date Formatter
+    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -26,6 +29,7 @@ final class ImagesListViewController: UIViewController {
     }()
     
     // MARK: - View Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
@@ -45,17 +49,17 @@ final class ImagesListViewController: UIViewController {
                 guard let userInfo = notification.userInfo,
                       let updatedPhotos = userInfo["photos"] as? [PhotoViewModel]
                 else {
-                          assertionFailure("Error: unable to get updated photos")
-                          print("Error: unable to get updated photos")
-                          return
+                    assertionFailure("Error: unable to get updated photos")
+                    return
                 }
                 self.updateTableViewAnimated(updatedPhotos: updatedPhotos)
             }
         )
-
+        
     }
     
     // MARK: - Navigation
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.showSingleImageSegueIdentifier {
             guard
@@ -73,6 +77,7 @@ final class ImagesListViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    
     private func updateTableViewAnimated(updatedPhotos: [PhotoViewModel]) {
         let oldCount = photos.count
         let newCount = updatedPhotos.count
@@ -106,12 +111,14 @@ final class ImagesListViewController: UIViewController {
                 )
                 
                 self.photos[index] = newPhoto
+                self.imagesListService.photos[index] = newPhoto
             }
         }
     }
 }
 
 // MARK: UITableViewDataSource
+
 extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -127,7 +134,7 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         
         imagesListCell.delegate = self
-    
+        
         let urls = photos.compactMap { URL(string: $0.thumbImageURL) }
         let dates = photos.compactMap { $0.createdAt }
         
@@ -152,6 +159,7 @@ extension ImagesListViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
+
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let imageWidth = CGFloat(photos[indexPath.row].size.width)
@@ -166,11 +174,11 @@ extension ImagesListViewController: UITableViewDelegate {
 }
 
 // MARK: - ImagesListCellDelegate
+
 extension ImagesListViewController: ImagesListCellDelegateProtocol{
     func imagesListCellDidTapLike(cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else {
             assertionFailure("Error: unable to get cell index")
-            print("Error: unable to get cell index")
             return
         }
         let photo = photos[indexPath.row]
@@ -184,7 +192,6 @@ extension ImagesListViewController: ImagesListCellDelegateProtocol{
                 UIBlockingProgressHUD.dismiss()
                 // TODO: Показать ошибку с использованием UIAlertController
                 assertionFailure("Error: unable to change like. \(error)")
-                print("Error: unable to change like. \(error)")
             }
         }
     }
