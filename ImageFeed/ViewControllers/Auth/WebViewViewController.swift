@@ -6,7 +6,14 @@
 //
 import WebKit
 
-final class WebViewViewController: UIViewController {
+protocol WebViewViewControllerProtocol: AnyObject {
+    var presenter: WebViewPresenterProtocol? { get set }
+    func load(request: URLRequest)
+    func setProgressValue(_ newValue: Float)
+    func setProgressHidden(_ isHidden: Bool)
+}
+
+final class WebViewViewController: UIViewController & WebViewViewControllerProtocol {
     
     // MARK: - IB Outlets
     
@@ -17,6 +24,7 @@ final class WebViewViewController: UIViewController {
     // MARK: - Internal Properties
     
     weak var delegate: WebViewViewControllerDelegate?
+    var presenter: WebViewPresenterProtocol?
     
     // MARK: - Private Properties
     
@@ -27,7 +35,7 @@ final class WebViewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         backwardButton.setTitle("", for: .normal)
-        loadAuthView()
+        presenter?.viewDidLoad()
         webView.navigationDelegate = self
         
         estimatedProgressObservation = webView.observe(
@@ -35,7 +43,7 @@ final class WebViewViewController: UIViewController {
              options: []
         ) { [weak self] _, _ in
             guard let self else { return }
-            self.updateProgress()
+            presenter?.didUpdateProgressValue(webView.estimatedProgress)
         }
     }
     
@@ -45,29 +53,21 @@ final class WebViewViewController: UIViewController {
         delegate?.webViewViewControllerDidCancel(self)
     }
     
-    // MARK: - Private Methods
+    // MARK: - Internal Methods
     
-    private func loadAuthView() {
-        guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
-            assertionFailure("Error: failed to get unsplashAuthorizeURLString")
-            return
-        }
-        
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
-        ]
-        
-        guard let url = urlComponents.url else {
-            assertionFailure("Error: failed to get url")
-            return
-        }
-        
-        let request = URLRequest(url: url)
+    func load(request: URLRequest) {
         webView.load(request)
     }
+    
+    func setProgressValue(_ newValue: Float) {
+        progressView.progress = newValue
+    }
+    
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
+    }
+    
+    // MARK: - Private Methods
     
     // Функция code(from:) проверяет, есть ли в URL, на который хочет перейти пользователь параметр code
     // Параметр code используется для авторизации в OAuth
@@ -90,11 +90,6 @@ final class WebViewViewController: UIViewController {
             // Если параметр с именем "code" не найден - возвращаем nil
             return nil
         }
-    }
-    
-    private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
 }
 

@@ -34,6 +34,9 @@ final class AuthViewController: UIViewController {
                 assertionFailure("Error: invalid segue destination")
                 return
             }
+            let webViewPresenter = WebViewPresenter()
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
             webViewViewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
