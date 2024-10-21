@@ -72,24 +72,11 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     // Функция code(from:) проверяет, есть ли в URL, на который хочет перейти пользователь параметр code
     // Параметр code используется для авторизации в OAuth
     private func code(from navigationAction: WKNavigationAction) -> String? {
-        if
-            // Из объекта navigationAction достаем URL, по которому пользователь собирается перейти
-            let url = navigationAction.request.url,
-            // Превращаем этот URL в структуру URLComponents, чтобы проще было работать с его компонентами
-            let urlComponents = URLComponents(string: url.absoluteString),
-            // Проверяем соответствует ли путь в URL тому, который мы ожидаем для получения кода авторизации
-            urlComponents.path == "/oauth/authorize/native",
-            // Проверяем есть ли у URL параметры (query items), которые могли бы содержать код
-            let items = urlComponents.queryItems,
-            // Среди всех параметров (query items) ищем такой, у которого имя "code"
-            let codeItem = items.first(where: { $0.name == "code" })
-        {
-            // Если параметр с именем "code" найден - возвращаем его
-            return codeItem.value
-        } else {
-            // Если параметр с именем "code" не найден - возвращаем nil
-            return nil
+        // Из объекта navigationAction достаем URL, по которому пользователь собирается перейти
+        if let url = navigationAction.request.url {
+            return presenter?.code(from: url)
         }
+        return nil
     }
 }
 

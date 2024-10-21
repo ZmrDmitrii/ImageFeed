@@ -10,10 +10,11 @@ protocol WebViewPresenterProtocol: AnyObject {
     var view: WebViewViewControllerProtocol? { get set }
     func viewDidLoad()
     func didUpdateProgressValue(_ newValue: Double)
+    func code(from url: URL) -> String?
 }
 
 final class WebViewPresenter: WebViewPresenterProtocol {
-    
+     
     var view: (any WebViewViewControllerProtocol)?
     
     // MARK: - Internal Methods
@@ -26,6 +27,22 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         let shouldHideProgress = shouldHideProgress(for: Float(newValue))
         view?.setProgressValue(Float(newValue))
         view?.setProgressHidden(shouldHideProgress)
+    }
+    
+    func code(from url: URL) -> String? {
+        // Превращаем этот URL в структуру URLComponents, чтобы проще было работать с его компонентами
+        // Проверяем соответствует ли путь в URL тому, который мы ожидаем для получения кода авторизации
+        // Проверяем есть ли у URL параметры (query items), которые могли бы содержать код
+        // Среди всех параметров (query items) ищем такой, у которого имя "code"
+        if let urlComponents = URLComponents(string: url.absoluteString),
+           urlComponents.path == "/oauth/authorize/native",
+           let items = urlComponents.queryItems,
+           let codeItem = items.first(where: { $0.name == "code" })
+        {
+            return codeItem.value
+        } else {
+            return nil
+        }
     }
     
     // MARK: - Private Methods
