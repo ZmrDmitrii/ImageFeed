@@ -14,15 +14,19 @@ protocol AuthViewControllerDelegate: AnyObject {
 final class AuthViewController: UIViewController {
     
     // MARK: - IB Outlets
+    
     @IBOutlet weak var logInButton: UIButton!
     
-    // MARK: - Public Properties
+    // MARK: - Internal Properties
+    
     weak var delegate: AuthViewControllerDelegate? = nil
     
     // MARK: - Private Properties
+    
     private let oAuth2Service = OAuth2Service.shared
     
     // MARK: - Navigation
+    
     // При нажатии на "Войти" AuthVC становится делегатом WebViewVC
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.showWebViewSegueIdentifier {
@@ -38,6 +42,7 @@ final class AuthViewController: UIViewController {
 }
 
 // MARK: - WebViewViewControllerDelegate
+
 extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {

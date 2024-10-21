@@ -7,7 +7,7 @@
 import Foundation
 
 struct ImageViewModel {
-    let imageName: String
+    let thumbnailURL: URL
     let date: String
     let isLiked: Bool
 }

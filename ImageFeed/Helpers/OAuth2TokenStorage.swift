@@ -15,12 +15,13 @@ final class OAuth2TokenStorage {
         set {
             guard let newValue else {
                 // TODO: add alert
-                assertionFailure("Error: unable to add acess token to keychain")
-                print("Error: unable to add acess token to keychain")
+                assertionFailure("Error: unable to add access token to keychain")
                 return
             }
             KeychainWrapper.standard.removeObject(forKey: "accessToken")
-            KeychainWrapper.standard.set(newValue, forKey: "accessToken")
+            if !newValue.isEmpty {
+                KeychainWrapper.standard.set(newValue, forKey: "accessToken")
+            }
         }
     }
 }
