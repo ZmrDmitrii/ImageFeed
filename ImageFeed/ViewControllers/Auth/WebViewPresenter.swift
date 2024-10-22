@@ -16,6 +16,11 @@ protocol WebViewPresenterProtocol: AnyObject {
 final class WebViewPresenter: WebViewPresenterProtocol {
      
     var view: (any WebViewViewControllerProtocol)?
+    private var authHelper: AuthHelperProtocol
+    
+    init(authHelper: AuthHelperProtocol) {
+        self.authHelper = authHelper
+    }
     
     // MARK: - Internal Methods
     
@@ -30,42 +35,16 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     }
     
     func code(from url: URL) -> String? {
-        // Превращаем этот URL в структуру URLComponents, чтобы проще было работать с его компонентами
-        // Проверяем соответствует ли путь в URL тому, который мы ожидаем для получения кода авторизации
-        // Проверяем есть ли у URL параметры (query items), которые могли бы содержать код
-        // Среди всех параметров (query items) ищем такой, у которого имя "code"
-        if let urlComponents = URLComponents(string: url.absoluteString),
-           urlComponents.path == "/oauth/authorize/native",
-           let items = urlComponents.queryItems,
-           let codeItem = items.first(where: { $0.name == "code" })
-        {
-            return codeItem.value
-        } else {
-            return nil
-        }
+        authHelper.code(from: url)
     }
     
     // MARK: - Private Methods
     
     private func loadAuthView() {
-        guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
-            assertionFailure("Error: failed to get unsplashAuthorizeURLString")
+        guard let request = authHelper.createAuthRequest() else {
+            assertionFailure("Error: unable to create auth request")
             return
         }
-        
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
-        ]
-        
-        guard let url = urlComponents.url else {
-            assertionFailure("Error: failed to get url")
-            return
-        }
-        
-        let request = URLRequest(url: url)
         view?.load(request: request)
     }
     
