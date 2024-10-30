@@ -49,19 +49,17 @@ class AuthHelper: AuthHelperProtocol {
         }
     }
     
-    // MARK: - Private Methods
-    
-    private func createAuthURL() -> URL? {
+    func createAuthURL() -> URL? {
         guard var urlComponents = URLComponents(string: configuration.authURLString) else {
             assertionFailure("Error: failed to get unsplashAuthorizeURLString")
             return nil
         }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "client_id", value: configuration.accessKey),
+            URLQueryItem(name: "redirect_uri", value: configuration.redirectURI),
             URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
+            URLQueryItem(name: "scope", value: configuration.accessScope)
         ]
         
         return urlComponents.url
