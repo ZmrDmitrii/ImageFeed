@@ -31,8 +31,6 @@ final class WebViewViewControllerSpy: WebViewViewControllerProtocol {
     func setProgressValue(_ newValue: Float) {}
     
     func setProgressHidden(_ isHidden: Bool) {}
-    
-    
 }
 
 final class ImageFeedTests: XCTestCase {
@@ -97,7 +95,6 @@ final class ImageFeedTests: XCTestCase {
         
         //When
         let url = authHelper.createAuthURL()
-        
         guard let urlString = url?.absoluteString else {
             XCTFail("Auth URL is nil")
             return
@@ -109,8 +106,6 @@ final class ImageFeedTests: XCTestCase {
         XCTAssertTrue(urlString.contains(configuration.redirectURI))
         XCTAssertTrue(urlString.contains("code"))
         XCTAssertTrue(urlString.contains(configuration.accessScope))
-                      
-        
     }
     
     func testCodeFromURL() {

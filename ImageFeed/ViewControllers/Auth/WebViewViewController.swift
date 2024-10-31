@@ -37,6 +37,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
         backwardButton.setTitle("", for: .normal)
         presenter?.viewDidLoad()
         webView.navigationDelegate = self
+        webView.accessibilityIdentifier = "UnsplashWebView"
         
         estimatedProgressObservation = webView.observe(
             \.estimatedProgress,

@@ -154,5 +154,4 @@ final class ImagesListViewTestes: XCTestCase {
         //Then
         XCTAssertFalse(changedPhoto.isLiked)
     }
-    
 }

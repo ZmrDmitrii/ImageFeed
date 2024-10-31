@@ -60,5 +60,4 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
         }
         view?.updateAvatar(url: url)
     }
-    
 }

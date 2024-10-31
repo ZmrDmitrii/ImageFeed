@@ -47,7 +47,6 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
             object: nil,
@@ -73,6 +72,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     }
     
     // MARK: - Internal Methods
+    
     func configure(presenter: ProfileViewPresenterProtocol) {
         self.presenter = presenter
         presenter.view = self
@@ -102,6 +102,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(exitButton)
         exitButton.tintColor = UIColor.ypRed
+        exitButton.accessibilityIdentifier = "Exit"
         
         NSLayoutConstraint.activate([
             exitButton.widthAnchor.constraint(equalToConstant: 44),

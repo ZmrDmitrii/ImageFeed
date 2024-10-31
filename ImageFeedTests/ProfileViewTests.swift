@@ -34,8 +34,6 @@ final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
     func updateAvatar(url: URL) {
         updateAvatarCalled = true
     }
-    
-    
 }
 
 final class ProfileViewTests: XCTestCase {
