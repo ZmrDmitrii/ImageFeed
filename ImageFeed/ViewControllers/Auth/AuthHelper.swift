@@ -11,7 +11,7 @@ protocol AuthHelperProtocol {
     func code(from url: URL) -> String?
 }
 
-class AuthHelper: AuthHelperProtocol {
+final class AuthHelper: AuthHelperProtocol {
     
     // MARK: - Private Properties
     

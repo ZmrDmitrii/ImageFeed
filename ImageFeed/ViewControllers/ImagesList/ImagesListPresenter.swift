@@ -18,7 +18,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     
     // MARK: - Internal Properties
     
-    var view: ImagesListViewControllerProtocol?
+    weak var view: ImagesListViewControllerProtocol?
     
     // MARK: - Private Properties
     

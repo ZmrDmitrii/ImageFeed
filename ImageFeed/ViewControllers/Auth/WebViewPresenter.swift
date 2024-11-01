@@ -17,11 +17,11 @@ final class WebViewPresenter: WebViewPresenterProtocol {
      
     // MARK: - Internal Properties
     
-    var view: (any WebViewViewControllerProtocol)?
+    weak var view: (any WebViewViewControllerProtocol)?
     
     // MARK: - Private Properties
     
-    private var authHelper: AuthHelperProtocol
+    private let authHelper: AuthHelperProtocol
     
     // MARK: - Initializers
     

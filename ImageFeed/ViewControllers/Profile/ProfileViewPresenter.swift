@@ -17,7 +17,7 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     
     // MARK: - Internal Properties
     
-    var view: ProfileViewControllerProtocol?
+    weak var view: ProfileViewControllerProtocol?
     
     // MARK: - Internal Methods
     

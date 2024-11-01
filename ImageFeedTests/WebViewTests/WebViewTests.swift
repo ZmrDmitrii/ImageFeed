@@ -7,32 +7,6 @@
 import XCTest
 @testable import ImageFeed
 
-final class WebViewPresenterSpy: WebViewPresenterProtocol {
-    var view: (any ImageFeed.WebViewViewControllerProtocol)?
-    var viewDidLoadCalled: Bool = false
-    
-    func viewDidLoad() {
-        viewDidLoadCalled = true
-    }
-    
-    func didUpdateProgressValue(_ newValue: Double) {}
-    
-    func code(from url: URL) -> String? { return nil }
-}
-
-final class WebViewViewControllerSpy: WebViewViewControllerProtocol {
-    var presenter: (any ImageFeed.WebViewPresenterProtocol)?
-    var loadCalled: Bool = false
-    
-    func load(request: URLRequest) {
-        loadCalled = true
-    }
-    
-    func setProgressValue(_ newValue: Float) {}
-    
-    func setProgressHidden(_ isHidden: Bool) {}
-}
-
 final class ImageFeedTests: XCTestCase {
     
     func testViewControllerCallsViewDidLoad() {

@@ -7,35 +7,6 @@
 import XCTest
 @testable import ImageFeed
 
-final class ProfileViewPresenterSpy: ProfileViewPresenterProtocol {
-    var view: (any ImageFeed.ProfileViewControllerProtocol)?
-    var createAlertCalled: Bool = false
-    var viewDidLoadCallsCounter = 0
-    
-    func viewDidLoad() {
-        viewDidLoadCallsCounter += 1
-    }
-    
-    func createExitAlert() -> UIAlertController {
-        createAlertCalled = true
-        return UIAlertController(title: "test", message: "test", preferredStyle: .alert)
-    }
-}
-
-final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
-    var presenter: (any ImageFeed.ProfileViewPresenterProtocol)?
-    var updateProfileDataCalled: Bool = false
-    var updateAvatarCalled: Bool = false
-    
-    func updateProfileData(username: String, name: String, loginName: String, bio: String?) {
-        updateProfileDataCalled = true
-    }
-    
-    func updateAvatar(url: URL) {
-        updateAvatarCalled = true
-    }
-}
-
 final class ProfileViewTests: XCTestCase {
     
     func testViewControllerCallsViewDidLoad() {
