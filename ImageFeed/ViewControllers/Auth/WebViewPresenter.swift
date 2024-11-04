@@ -17,7 +17,7 @@ final class WebViewPresenter: WebViewPresenterProtocol {
      
     // MARK: - Internal Properties
     
-    weak var view: (any WebViewViewControllerProtocol)?
+    weak var view: WebViewViewControllerProtocol?
     
     // MARK: - Private Properties
     
