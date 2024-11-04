@@ -7,7 +7,20 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    func updateProfileData(username: String,
+                           name: String,
+                           loginName: String,
+                           bio: String?)
+    func updateAvatar(url: URL)
+}
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
+    
+    // MARK: - Internal Properties
+    
+    var presenter: ProfileViewPresenterProtocol?
     
     // MARK: - Private Properties
     
@@ -28,42 +41,52 @@ final class ProfileViewController: UIViewController {
     }()
     
     private let profileService = ProfileService.shared
-    private var profile: ProfileViewModel?
-    
     private var profileImageServiceObserver: NSObjectProtocol?
     
     // MARK: - View Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        profile = ProfileStorage.profile
-        
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
             object: nil,
             queue: .main,
             using: { [weak self] _ in
                 guard let self else { return }
-                self.updateAvatar()
+                self.presenter?.viewDidLoad()
             }
         )
-        
+        presenter?.viewDidLoad()
         setupLayout()
-        updateAvatar()
     }
+    
     
     // MARK: - Button Actions
     
-    @objc private func didTapExitButton() {
-        let alert = UIAlertController(title: "Пока, пока!", message: "Уверены что хотите выйти?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "Да", style: .default, handler: { _ in
-            ProfileLogoutService.shared.logout()
-        })
-        let noAction = UIAlertAction(title: "Нет", style: .cancel)
-        
-        alert.addAction(yesAction)
-        alert.addAction(noAction)
+    @objc func didTapExitButton() {
+        guard let alert = presenter?.createExitAlert() else {
+            assertionFailure("Error: unable to create exit alert")
+            return
+        }
         present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: - Internal Methods
+    
+    func configure(presenter: ProfileViewPresenterProtocol) {
+        self.presenter = presenter
+        presenter.view = self
+    }
+    
+    func updateProfileData(username: String, name: String, loginName: String, bio: String?) {
+        createLabels(name: name, loginName: loginName, bio: bio)
+    }
+    
+    func updateAvatar(url: URL) {
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        profileImageView.kf.setImage(with: url,
+                                     placeholder: UIImage.stub,
+                                     options: [.processor(processor)])
     }
     
     // MARK: - Private Methods
@@ -71,7 +94,6 @@ final class ProfileViewController: UIViewController {
     private func setupLayout() {
         view.backgroundColor = UIColor.ypBackground
         createExitButton()
-        createLabels()
     }
     
     private func createExitButton() {
@@ -80,6 +102,7 @@ final class ProfileViewController: UIViewController {
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(exitButton)
         exitButton.tintColor = UIColor.ypRed
+        exitButton.accessibilityIdentifier = "Exit"
         
         NSLayoutConstraint.activate([
             exitButton.widthAnchor.constraint(equalToConstant: 44),
@@ -89,25 +112,25 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func createLabels() {
+    private func createLabels(name: String, loginName: String, bio: String?) {
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nameLabel)
-        nameLabel.text = profile?.name
+        nameLabel.text = name
         nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         nameLabel.textColor = UIColor.ypWhite
         
         let nicknameLabel = UILabel()
         nicknameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nicknameLabel)
-        nicknameLabel.text = profile?.loginName
+        nicknameLabel.text = loginName
         nicknameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         nicknameLabel.textColor = UIColor.ypGrey
         
         let descriptionLabel = UILabel()
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(descriptionLabel)
-        descriptionLabel.text = profile?.bio
+        descriptionLabel.text = bio
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.textColor = UIColor.ypWhite
         
@@ -121,16 +144,6 @@ final class ProfileViewController: UIViewController {
             descriptionLabel.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: 8),
             descriptionLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor)
         ])
-    }
-    
-    private func updateAvatar() {
-        guard let avatarURL = ProfileStorage.avatarURL,
-              let url = URL(string: avatarURL)
-        else { return }
-        let processor = RoundCornerImageProcessor(cornerRadius: 61)
-        profileImageView.kf.setImage(with: url,
-                                     placeholder: UIImage.stub,
-                                     options: [.processor(processor)])
     }
 }
 

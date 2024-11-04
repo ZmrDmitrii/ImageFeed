@@ -7,26 +7,27 @@
 import UIKit
 import Kingfisher
 
-final class ImagesListViewController: UIViewController {
+protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImagesListPresenterProtocol? { get set }
+    var photos: [PhotoViewModel] { get set }
+    func addRows(indexPaths: [IndexPath])
+    func removeRows(indexPaths: [IndexPath])
+}
+
+final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
     
     // MARK: - IBOutlets
     
     @IBOutlet private var tableView: UITableView!
     
+    // MARK: - Internal Properties
+    
+    var photos: [PhotoViewModel] = []
+    var presenter: ImagesListPresenterProtocol?
+    
     // MARK: - Private properties
     
     private var imagesListServiceObserver: NSObjectProtocol?
-    private(set) var photos: [PhotoViewModel] = []
-    private let imagesListService = ImagesListService.shared
-    
-    // MARK: - Date Formatter
-    
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
     
     // MARK: - View Life Cycle
     
@@ -37,25 +38,23 @@ final class ImagesListViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 4, right: 0)
         tableView.showsVerticalScrollIndicator = false
         
-        imagesListService.fetchPhotosNextPage()
+        presenter?.fetchPhotosNextPage()
         
         imagesListServiceObserver = NotificationCenter.default.addObserver(
             forName: ImagesListService.didChangeNotification,
             object: nil,
             queue: .main,
             using: { [weak self] notification in
-                guard let self else { return }
-                
-                guard let userInfo = notification.userInfo,
+                guard let self,
+                      let userInfo = notification.userInfo,
                       let updatedPhotos = userInfo["photos"] as? [PhotoViewModel]
                 else {
                     assertionFailure("Error: unable to get updated photos")
                     return
                 }
-                self.updateTableViewAnimated(updatedPhotos: updatedPhotos)
+                presenter?.updatePhotos(updatedPhotos: updatedPhotos)
             }
         )
-        
     }
     
     // MARK: - Navigation
@@ -76,48 +75,27 @@ final class ImagesListViewController: UIViewController {
         }
     }
     
-    // MARK: - Private Methods
+    // MARK: - Internal Methods
     
-    private func updateTableViewAnimated(updatedPhotos: [PhotoViewModel]) {
-        let oldCount = photos.count
-        let newCount = updatedPhotos.count
-        photos = updatedPhotos
-        if oldCount != newCount && newCount != 0 {
-            let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
-            tableView.performBatchUpdates {
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            }
-        } else if newCount == 0 {
-            let indexPaths = (newCount..<oldCount).map { IndexPath(row: $0, section: 0) }
-            tableView.performBatchUpdates {
-                tableView.deleteRows(at: indexPaths, with: .automatic)
-            }
+    func configure(presenter: ImagesListPresenterProtocol) {
+        self.presenter = presenter
+        presenter.view = self
+    }
+    
+    func addRows(indexPaths: [IndexPath]) {
+        tableView.performBatchUpdates {
+            tableView.insertRows(at: indexPaths, with: .automatic)
         }
     }
     
-    private func updateIsLikedProperty(photoID: String) {
-        if let index = self.photos.firstIndex(where: { $0.id == photoID }) {
-            DispatchQueue.main.async {
-                let photo = self.photos[index]
-                
-                let newPhoto = PhotoViewModel(
-                    id: photo.id,
-                    createdAt: photo.createdAt,
-                    size: photo.size,
-                    welcomeDescription: photo.welcomeDescription,
-                    thumbImageURL: photo.thumbImageURL,
-                    largeImageURL: photo.largeImageURL,
-                    isLiked: !photo.isLiked
-                )
-                
-                self.photos[index] = newPhoto
-                self.imagesListService.photos[index] = newPhoto
-            }
+    func removeRows(indexPaths: [IndexPath]) {
+        tableView.performBatchUpdates {
+            tableView.deleteRows(at: indexPaths, with: .automatic)
         }
     }
 }
 
-// MARK: UITableViewDataSource
+// MARK: - UITableViewDataSource
 
 extension ImagesListViewController: UITableViewDataSource {
     
@@ -135,12 +113,11 @@ extension ImagesListViewController: UITableViewDataSource {
         
         imagesListCell.delegate = self
         
-        let urls = photos.compactMap { URL(string: $0.thumbImageURL) }
-        let dates = photos.compactMap { $0.createdAt }
+        guard let model = presenter?.createImageViewModel(indexPath: indexPath, photos: photos) else {
+            assertionFailure("Error: unable to create ImageViewModel")
+            return UITableViewCell()
+        }
         
-        let model = ImageViewModel(thumbnailURL: urls[indexPath.row],
-                                   date: dateFormatter.string(from: dates[indexPath.row]),
-                                   isLiked: photos[indexPath.row].isLiked)
         imagesListCell.configure(with: model) {
             // Перезагружаю ячейку после загрузки в нее фото, чтобы обновилась высота
             DispatchQueue.main.async {
@@ -153,7 +130,7 @@ extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == (photos.count - 1) {
-            imagesListService.fetchPhotosNextPage()
+            presenter?.fetchPhotosNextPage()
         }
     }
 }
@@ -182,10 +159,9 @@ extension ImagesListViewController: ImagesListCellDelegateProtocol{
             return
         }
         let photo = photos[indexPath.row]
-        imagesListService.changeLike(photoID: photo.id, isLiked: photo.isLiked) { [weak self] result in
+        presenter?.changeLike(photo: photo) { result in
             switch result {
             case .success():
-                self?.updateIsLikedProperty(photoID: photo.id)
                 cell.setIsLiked()
                 UIBlockingProgressHUD.dismiss()
             case .failure(let error):

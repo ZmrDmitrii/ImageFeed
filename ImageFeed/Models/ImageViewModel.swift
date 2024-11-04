@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct ImageViewModel {
+struct ImageViewModel: Equatable {
     let thumbnailURL: URL
     let date: String
     let isLiked: Bool

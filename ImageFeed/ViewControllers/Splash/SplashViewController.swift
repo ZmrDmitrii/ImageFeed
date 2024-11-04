@@ -30,8 +30,7 @@ final class SplashViewController: UIViewController {
             
             guard let authViewController = storyboard.instantiateViewController(
                 withIdentifier: Constants.authVCIdentifier
-            ) as? AuthViewController
-            else {
+            ) as? AuthViewController else {
                 return
             }
             

@@ -24,6 +24,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iBJ-RK-XBA">
                                 <rect key="frame" x="16" y="677.33333333333337" width="361" height="50.666666666666629"/>
                                 <color key="backgroundColor" name="YPWhite"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authenticate"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="iBJ-RK-XBA" secondAttribute="height" multiplier="343:48" id="knT-OK-dxT"/>
                                 </constraints>
@@ -65,7 +66,7 @@
         <!--Web View View Controller-->
         <scene sceneID="itb-pC-6cH">
             <objects>
-                <viewController id="JmU-Sf-Xld" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="JmU-Sf-Xld" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="YEC-8G-lup">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -176,6 +177,7 @@
                                                                 </label>
                                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wiv-Ua-U6L">
                                                                     <rect key="frame" x="317" y="0.0" width="44" height="44"/>
+                                                                    <accessibility key="accessibilityConfiguration" identifier="Like"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" secondItem="Wiv-Ua-U6L" secondAttribute="height" multiplier="1:1" id="VAl-aF-W9P"/>
                                                                         <constraint firstAttribute="height" constant="44" id="hhn-Ch-v9E"/>
@@ -285,6 +287,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RF4-As-Suj">
                                 <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Back"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="7QX-2b-KAu"/>
                                     <constraint firstAttribute="width" secondItem="RF4-As-Suj" secondAttribute="height" multiplier="1:1" id="UQ3-fp-aY8"/>
